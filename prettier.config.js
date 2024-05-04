@@ -1,4 +1,8 @@
 /**
  * @type {import('prettier').Options}
  */
-module.exports = {};
+module.exports = {
+  semi: true,
+  singleQuote: true,
+  printWidth: 160,
+};

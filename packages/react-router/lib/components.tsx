@@ -9,7 +9,7 @@ import type {
   RouterSubscriber,
   To,
   TrackedPromise,
-} from "@remix-run/router";
+} from '@remix-run/router';
 import {
   AbortedDeferredError,
   Action as NavigationType,
@@ -20,35 +20,12 @@ import {
   resolveTo,
   stripBasename,
   UNSAFE_warning as warning,
-} from "@remix-run/router";
-import * as React from "react";
+} from '@remix-run/router';
+import * as React from 'react';
 
-import type {
-  DataRouteObject,
-  IndexRouteObject,
-  Navigator,
-  NonIndexRouteObject,
-  RouteMatch,
-  RouteObject,
-} from "./context";
-import {
-  AwaitContext,
-  DataRouterContext,
-  DataRouterStateContext,
-  LocationContext,
-  NavigationContext,
-  RouteContext,
-} from "./context";
-import {
-  _renderMatches,
-  useAsyncValue,
-  useInRouterContext,
-  useLocation,
-  useNavigate,
-  useOutlet,
-  useRoutes,
-  useRoutesImpl,
-} from "./hooks";
+import type { DataRouteObject, IndexRouteObject, Navigator, NonIndexRouteObject, RouteMatch, RouteObject } from './context';
+import { AwaitContext, DataRouterContext, DataRouterStateContext, LocationContext, NavigationContext, RouteContext } from './context';
+import { _renderMatches, useAsyncValue, useInRouterContext, useLocation, useNavigate, useOutlet, useRoutes, useRoutesImpl } from './hooks';
 
 export interface FutureConfig {
   v7_relativeSplatPath: boolean;
@@ -60,7 +37,7 @@ export interface RouterProviderProps {
   router: RemixRouter;
   // Only accept future flags relevant to rendering behavior
   // routing flags should be accessed via router.future
-  future?: Partial<Pick<FutureConfig, "v7_startTransition">>;
+  future?: Partial<Pick<FutureConfig, 'v7_startTransition'>>;
 }
 
 /**
@@ -84,17 +61,13 @@ export interface RouterProviderProps {
 
   See https://github.com/remix-run/react-router/issues/10579
 */
-const START_TRANSITION = "startTransition";
+const START_TRANSITION = 'startTransition';
 const startTransitionImpl = React[START_TRANSITION];
 
 /**
  * Given a Remix Router instance, render the appropriate UI
  */
-export function RouterProvider({
-  fallbackElement,
-  router,
-  future,
-}: RouterProviderProps): React.ReactElement {
+export function RouterProvider({ fallbackElement, router, future }: RouterProviderProps): React.ReactElement {
   let [state, setStateImpl] = React.useState(router.state);
   let { v7_startTransition } = future || {};
 
@@ -116,8 +89,7 @@ export function RouterProvider({
   React.useEffect(() => {
     warning(
       fallbackElement == null || !router.future.v7_partialHydration,
-      "`<RouterProvider fallbackElement>` is deprecated when using " +
-        "`v7_partialHydration`, use a `HydrateFallback` component instead"
+      '`<RouterProvider fallbackElement>` is deprecated when using ' + '`v7_partialHydration`, use a `HydrateFallback` component instead'
     );
     // Only log this once on initial mount
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -142,7 +114,7 @@ export function RouterProvider({
     };
   }, [router]);
 
-  let basename = router.basename || "/";
+  let basename = router.basename || '/';
 
   let dataRouterContext = React.useMemo(
     () => ({
@@ -174,11 +146,7 @@ export function RouterProvider({
             }}
           >
             {state.initialized || router.future.v7_partialHydration ? (
-              <DataRoutes
-                routes={router.routes}
-                future={router.future}
-                state={state}
-              />
+              <DataRoutes routes={router.routes} future={router.future} state={state} />
             ) : (
               fallbackElement
             )}
@@ -190,15 +158,7 @@ export function RouterProvider({
   );
 }
 
-function DataRoutes({
-  routes,
-  future,
-  state,
-}: {
-  routes: DataRouteObject[];
-  future: RemixRouter["future"];
-  state: RouterState;
-}): React.ReactElement | null {
+function DataRoutes({ routes, future, state }: { routes: DataRouteObject[]; future: RemixRouter['future']; state: RouterState }): React.ReactElement | null {
   return useRoutesImpl(routes, undefined, state, future);
 }
 
@@ -215,13 +175,7 @@ export interface MemoryRouterProps {
  *
  * @see https://reactrouter.com/router-components/memory-router
  */
-export function MemoryRouter({
-  basename,
-  children,
-  initialEntries,
-  initialIndex,
-  future,
-}: MemoryRouterProps): React.ReactElement {
+export function MemoryRouter({ basename, children, initialEntries, initialIndex, future }: MemoryRouterProps): React.ReactElement {
   let historyRef = React.useRef<MemoryHistory>();
   if (historyRef.current == null) {
     historyRef.current = createMemoryHistory({
@@ -239,25 +193,14 @@ export function MemoryRouter({
   let { v7_startTransition } = future || {};
   let setState = React.useCallback(
     (newState: { action: NavigationType; location: Location }) => {
-      v7_startTransition && startTransitionImpl
-        ? startTransitionImpl(() => setStateImpl(newState))
-        : setStateImpl(newState);
+      v7_startTransition && startTransitionImpl ? startTransitionImpl(() => setStateImpl(newState)) : setStateImpl(newState);
     },
     [setStateImpl, v7_startTransition]
   );
 
   React.useLayoutEffect(() => history.listen(setState), [history, setState]);
 
-  return (
-    <Router
-      basename={basename}
-      children={children}
-      location={state.location}
-      navigationType={state.action}
-      navigator={history}
-      future={future}
-    />
-  );
+  return <Router basename={basename} children={children} location={state.location} navigationType={state.action} navigator={history} future={future} />;
 }
 
 export interface NavigateProps {
@@ -276,12 +219,7 @@ export interface NavigateProps {
  *
  * @see https://reactrouter.com/components/navigate
  */
-export function Navigate({
-  to,
-  replace,
-  state,
-  relative,
-}: NavigateProps): null {
+export function Navigate({ to, replace, state, relative }: NavigateProps): null {
   invariant(
     useInRouterContext(),
     // TODO: This error is probably because they somehow have 2 versions of
@@ -304,18 +242,10 @@ export function Navigate({
 
   // Resolve the path outside of the effect so that when effects run twice in
   // StrictMode they navigate to the same place
-  let path = resolveTo(
-    to,
-    getResolveToMatches(matches, future.v7_relativeSplatPath),
-    locationPathname,
-    relative === "path"
-  );
+  let path = resolveTo(to, getResolveToMatches(matches, future.v7_relativeSplatPath), locationPathname, relative === 'path');
   let jsonPath = JSON.stringify(path);
 
-  React.useEffect(
-    () => navigate(JSON.parse(jsonPath), { replace, state, relative }),
-    [navigate, jsonPath, relative, replace, state]
-  );
+  React.useEffect(() => navigate(JSON.parse(jsonPath), { replace, state, relative }), [navigate, jsonPath, relative, replace, state]);
 
   return null;
 }
@@ -334,15 +264,15 @@ export function Outlet(props: OutletProps): React.ReactElement | null {
 }
 
 export interface PathRouteProps {
-  caseSensitive?: NonIndexRouteObject["caseSensitive"];
-  path?: NonIndexRouteObject["path"];
-  id?: NonIndexRouteObject["id"];
+  caseSensitive?: NonIndexRouteObject['caseSensitive'];
+  path?: NonIndexRouteObject['path'];
+  id?: NonIndexRouteObject['id'];
   lazy?: LazyRouteFunction<NonIndexRouteObject>;
-  loader?: NonIndexRouteObject["loader"];
-  action?: NonIndexRouteObject["action"];
-  hasErrorBoundary?: NonIndexRouteObject["hasErrorBoundary"];
-  shouldRevalidate?: NonIndexRouteObject["shouldRevalidate"];
-  handle?: NonIndexRouteObject["handle"];
+  loader?: NonIndexRouteObject['loader'];
+  action?: NonIndexRouteObject['action'];
+  hasErrorBoundary?: NonIndexRouteObject['hasErrorBoundary'];
+  shouldRevalidate?: NonIndexRouteObject['shouldRevalidate'];
+  handle?: NonIndexRouteObject['handle'];
   index?: false;
   children?: React.ReactNode;
   element?: React.ReactNode | null;
@@ -356,15 +286,15 @@ export interface PathRouteProps {
 export interface LayoutRouteProps extends PathRouteProps {}
 
 export interface IndexRouteProps {
-  caseSensitive?: IndexRouteObject["caseSensitive"];
-  path?: IndexRouteObject["path"];
-  id?: IndexRouteObject["id"];
+  caseSensitive?: IndexRouteObject['caseSensitive'];
+  path?: IndexRouteObject['path'];
+  id?: IndexRouteObject['id'];
   lazy?: LazyRouteFunction<IndexRouteObject>;
-  loader?: IndexRouteObject["loader"];
-  action?: IndexRouteObject["action"];
-  hasErrorBoundary?: IndexRouteObject["hasErrorBoundary"];
-  shouldRevalidate?: IndexRouteObject["shouldRevalidate"];
-  handle?: IndexRouteObject["handle"];
+  loader?: IndexRouteObject['loader'];
+  action?: IndexRouteObject['action'];
+  hasErrorBoundary?: IndexRouteObject['hasErrorBoundary'];
+  shouldRevalidate?: IndexRouteObject['shouldRevalidate'];
+  handle?: IndexRouteObject['handle'];
   index: true;
   children?: undefined;
   element?: React.ReactNode | null;
@@ -383,11 +313,7 @@ export type RouteProps = PathRouteProps | LayoutRouteProps | IndexRouteProps;
  * @see https://reactrouter.com/components/route
  */
 export function Route(_props: RouteProps): React.ReactElement | null {
-  invariant(
-    false,
-    `A <Route> is only ever to be used as the child of <Routes> element, ` +
-      `never rendered directly. Please wrap your <Route> in a <Routes>.`
-  );
+  invariant(false, `A <Route> is only ever to be used as the child of <Routes> element, ` + `never rendered directly. Please wrap your <Route> in a <Routes>.`);
 }
 
 export interface RouterProps {
@@ -397,7 +323,7 @@ export interface RouterProps {
   navigationType?: NavigationType;
   navigator: Navigator;
   static?: boolean;
-  future?: Partial<Pick<FutureConfig, "v7_relativeSplatPath">>;
+  future?: Partial<Pick<FutureConfig, 'v7_relativeSplatPath'>>;
 }
 
 /**
@@ -410,7 +336,7 @@ export interface RouterProps {
  * @see https://reactrouter.com/router-components/router
  */
 export function Router({
-  basename: basenameProp = "/",
+  basename: basenameProp = '/',
   children = null,
   location: locationProp,
   navigationType = NavigationType.Pop,
@@ -418,15 +344,11 @@ export function Router({
   static: staticProp = false,
   future,
 }: RouterProps): React.ReactElement | null {
-  invariant(
-    !useInRouterContext(),
-    `You cannot render a <Router> inside another <Router>.` +
-      ` You should never have more than one in your app.`
-  );
+  invariant(!useInRouterContext(), `You cannot render a <Router> inside another <Router>.` + ` You should never have more than one in your app.`);
 
   // Preserve trailing slashes on basename, so we can let the user control
   // the enforcement of trailing slashes throughout the app
-  let basename = basenameProp.replace(/^\/*/, "/");
+  let basename = basenameProp.replace(/^\/*/, '/');
   let navigationContext = React.useMemo(
     () => ({
       basename,
@@ -440,17 +362,11 @@ export function Router({
     [basename, future, navigator, staticProp]
   );
 
-  if (typeof locationProp === "string") {
+  if (typeof locationProp === 'string') {
     locationProp = parsePath(locationProp);
   }
 
-  let {
-    pathname = "/",
-    search = "",
-    hash = "",
-    state = null,
-    key = "default",
-  } = locationProp;
+  let { pathname = '/', search = '', hash = '', state = null, key = 'default' } = locationProp;
 
   let locationContext = React.useMemo(() => {
     let trailingPathname = stripBasename(pathname, basename);
@@ -500,10 +416,7 @@ export interface RoutesProps {
  *
  * @see https://reactrouter.com/components/routes
  */
-export function Routes({
-  children,
-  location,
-}: RoutesProps): React.ReactElement | null {
+export function Routes({ children, location }: RoutesProps): React.ReactElement | null {
   return useRoutes(createRoutesFromChildren(children), location);
 }
 
@@ -546,10 +459,7 @@ enum AwaitRenderStatus {
 
 const neverSettledPromise = new Promise(() => {});
 
-class AwaitErrorBoundary extends React.Component<
-  AwaitErrorBoundaryProps,
-  AwaitErrorBoundaryState
-> {
+class AwaitErrorBoundary extends React.Component<AwaitErrorBoundaryProps, AwaitErrorBoundaryState> {
   constructor(props: AwaitErrorBoundaryProps) {
     super(props);
     this.state = { error: null };
@@ -560,11 +470,7 @@ class AwaitErrorBoundary extends React.Component<
   }
 
   componentDidCatch(error: any, errorInfo: any) {
-    console.error(
-      "<Await> caught the following error during render",
-      error,
-      errorInfo
-    );
+    console.error('<Await> caught the following error during render', error, errorInfo);
   }
 
   render() {
@@ -577,40 +483,30 @@ class AwaitErrorBoundary extends React.Component<
       // Didn't get a promise - provide as a resolved promise
       status = AwaitRenderStatus.success;
       promise = Promise.resolve();
-      Object.defineProperty(promise, "_tracked", { get: () => true });
-      Object.defineProperty(promise, "_data", { get: () => resolve });
+      Object.defineProperty(promise, '_tracked', { get: () => true });
+      Object.defineProperty(promise, '_data', { get: () => resolve });
     } else if (this.state.error) {
       // Caught a render error, provide it as a rejected promise
       status = AwaitRenderStatus.error;
       let renderError = this.state.error;
       promise = Promise.reject().catch(() => {}); // Avoid unhandled rejection warnings
-      Object.defineProperty(promise, "_tracked", { get: () => true });
-      Object.defineProperty(promise, "_error", { get: () => renderError });
+      Object.defineProperty(promise, '_tracked', { get: () => true });
+      Object.defineProperty(promise, '_error', { get: () => renderError });
     } else if ((resolve as TrackedPromise)._tracked) {
       // Already tracked promise - check contents
       promise = resolve;
-      status =
-        promise._error !== undefined
-          ? AwaitRenderStatus.error
-          : promise._data !== undefined
-          ? AwaitRenderStatus.success
-          : AwaitRenderStatus.pending;
+      status = promise._error !== undefined ? AwaitRenderStatus.error : promise._data !== undefined ? AwaitRenderStatus.success : AwaitRenderStatus.pending;
     } else {
       // Raw (untracked) promise - track it
       status = AwaitRenderStatus.pending;
-      Object.defineProperty(resolve, "_tracked", { get: () => true });
+      Object.defineProperty(resolve, '_tracked', { get: () => true });
       promise = resolve.then(
-        (data: any) =>
-          Object.defineProperty(resolve, "_data", { get: () => data }),
-        (error: any) =>
-          Object.defineProperty(resolve, "_error", { get: () => error })
+        (data: any) => Object.defineProperty(resolve, '_data', { get: () => data }),
+        (error: any) => Object.defineProperty(resolve, '_error', { get: () => error })
       );
     }
 
-    if (
-      status === AwaitRenderStatus.error &&
-      promise._error instanceof AbortedDeferredError
-    ) {
+    if (status === AwaitRenderStatus.error && promise._error instanceof AbortedDeferredError) {
       // Freeze the UI by throwing a never resolved promise
       throw neverSettledPromise;
     }
@@ -639,13 +535,9 @@ class AwaitErrorBoundary extends React.Component<
  * @private
  * Indirection to leverage useAsyncValue for a render-prop API on `<Await>`
  */
-function ResolveAwait({
-  children,
-}: {
-  children: React.ReactNode | AwaitResolveRenderFunction;
-}) {
+function ResolveAwait({ children }: { children: React.ReactNode | AwaitResolveRenderFunction }) {
   let data = useAsyncValue();
-  let toRender = typeof children === "function" ? children(data) : children;
+  let toRender = typeof children === 'function' ? children(data) : children;
   return <>{toRender}</>;
 }
 
@@ -660,10 +552,7 @@ function ResolveAwait({
  *
  * @see https://reactrouter.com/utils/create-routes-from-children
  */
-export function createRoutesFromChildren(
-  children: React.ReactNode,
-  parentPath: number[] = []
-): RouteObject[] {
+export function createRoutesFromChildren(children: React.ReactNode, parentPath: number[] = []): RouteObject[] {
   let routes: RouteObject[] = [];
 
   React.Children.forEach(children, (element, index) => {
@@ -677,27 +566,21 @@ export function createRoutesFromChildren(
 
     if (element.type === React.Fragment) {
       // Transparently support React.Fragment and its children.
-      routes.push.apply(
-        routes,
-        createRoutesFromChildren(element.props.children, treePath)
-      );
+      routes.push.apply(routes, createRoutesFromChildren(element.props.children, treePath));
       return;
     }
 
     invariant(
       element.type === Route,
       `[${
-        typeof element.type === "string" ? element.type : element.type.name
+        typeof element.type === 'string' ? element.type : element.type.name
       }] is not a <Route> component. All component children of <Routes> must be a <Route> or <React.Fragment>`
     );
 
-    invariant(
-      !element.props.index || !element.props.children,
-      "An index route cannot have child routes."
-    );
+    invariant(!element.props.index || !element.props.children, 'An index route cannot have child routes.');
 
     let route: RouteObject = {
-      id: element.props.id || treePath.join("-"),
+      id: element.props.id || treePath.join('-'),
       caseSensitive: element.props.caseSensitive,
       element: element.props.element,
       Component: element.props.Component,
@@ -707,19 +590,14 @@ export function createRoutesFromChildren(
       action: element.props.action,
       errorElement: element.props.errorElement,
       ErrorBoundary: element.props.ErrorBoundary,
-      hasErrorBoundary:
-        element.props.ErrorBoundary != null ||
-        element.props.errorElement != null,
+      hasErrorBoundary: element.props.ErrorBoundary != null || element.props.errorElement != null,
       shouldRevalidate: element.props.shouldRevalidate,
       handle: element.props.handle,
       lazy: element.props.lazy,
     };
 
     if (element.props.children) {
-      route.children = createRoutesFromChildren(
-        element.props.children,
-        treePath
-      );
+      route.children = createRoutesFromChildren(element.props.children, treePath);
     }
 
     routes.push(route);
@@ -731,8 +609,6 @@ export function createRoutesFromChildren(
 /**
  * Renders the result of `matchRoutes()` into a React element.
  */
-export function renderMatches(
-  matches: RouteMatch[] | null
-): React.ReactElement | null {
+export function renderMatches(matches: RouteMatch[] | null): React.ReactElement | null {
   return _renderMatches(matches);
 }

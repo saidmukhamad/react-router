@@ -1,4 +1,4 @@
-import * as React from "react";
+import * as React from 'react';
 import type {
   ActionFunction,
   ActionFunctionArgs,
@@ -32,7 +32,7 @@ import type {
   To,
   UIMatch,
   unstable_HandlerResult,
-} from "@remix-run/router";
+} from '@remix-run/router';
 import {
   AbortedDeferredError,
   Action as NavigationType,
@@ -50,7 +50,7 @@ import {
   redirectDocument,
   resolvePath,
   UNSAFE_warning as warning,
-} from "@remix-run/router";
+} from '@remix-run/router';
 
 import type {
   AwaitProps,
@@ -65,19 +65,8 @@ import type {
   RouterProps,
   RouterProviderProps,
   RoutesProps,
-} from "./lib/components";
-import {
-  Await,
-  MemoryRouter,
-  Navigate,
-  Outlet,
-  Route,
-  Router,
-  RouterProvider,
-  Routes,
-  createRoutesFromChildren,
-  renderMatches,
-} from "./lib/components";
+} from './lib/components';
+import { Await, MemoryRouter, Navigate, Outlet, Route, Router, RouterProvider, Routes, createRoutesFromChildren, renderMatches } from './lib/components';
 import type {
   DataRouteMatch,
   DataRouteObject,
@@ -87,15 +76,9 @@ import type {
   NonIndexRouteObject,
   RouteMatch,
   RouteObject,
-} from "./lib/context";
-import {
-  DataRouterContext,
-  DataRouterStateContext,
-  LocationContext,
-  NavigationContext,
-  RouteContext,
-} from "./lib/context";
-import type { NavigateFunction } from "./lib/hooks";
+} from './lib/context';
+import { DataRouterContext, DataRouterStateContext, LocationContext, NavigationContext, RouteContext } from './lib/context';
+import type { NavigateFunction } from './lib/hooks';
 import {
   useActionData,
   useAsyncError,
@@ -120,7 +103,7 @@ import {
   useRouteLoaderData,
   useRoutes,
   useRoutesImpl,
-} from "./lib/hooks";
+} from './lib/hooks';
 
 // Exported for backwards compatibility, but not being used internally anymore
 type Hash = string;
@@ -240,11 +223,7 @@ function mapRouteProperties(route: RouteObject) {
   if (route.Component) {
     if (__DEV__) {
       if (route.element) {
-        warning(
-          false,
-          "You should not include both `Component` and `element` on your route - " +
-            "`Component` will be used."
-        );
+        warning(false, 'You should not include both `Component` and `element` on your route - ' + '`Component` will be used.');
       }
     }
     Object.assign(updates, {
@@ -256,11 +235,7 @@ function mapRouteProperties(route: RouteObject) {
   if (route.HydrateFallback) {
     if (__DEV__) {
       if (route.hydrateFallbackElement) {
-        warning(
-          false,
-          "You should not include both `HydrateFallback` and `hydrateFallbackElement` on your route - " +
-            "`HydrateFallback` will be used."
-        );
+        warning(false, 'You should not include both `HydrateFallback` and `hydrateFallbackElement` on your route - ' + '`HydrateFallback` will be used.');
       }
     }
     Object.assign(updates, {
@@ -272,11 +247,7 @@ function mapRouteProperties(route: RouteObject) {
   if (route.ErrorBoundary) {
     if (__DEV__) {
       if (route.errorElement) {
-        warning(
-          false,
-          "You should not include both `ErrorBoundary` and `errorElement` on your route - " +
-            "`ErrorBoundary` will be used."
-        );
+        warning(false, 'You should not include both `ErrorBoundary` and `errorElement` on your route - ' + '`ErrorBoundary` will be used.');
       }
     }
     Object.assign(updates, {
@@ -292,7 +263,7 @@ export function createMemoryRouter(
   routes: RouteObject[],
   opts?: {
     basename?: string;
-    future?: Partial<Omit<RouterFutureConfig, "v7_prependBasename">>;
+    future?: Partial<Omit<RouterFutureConfig, 'v7_prependBasename'>>;
     hydrationData?: HydrationState;
     initialEntries?: InitialEntry[];
     initialIndex?: number;

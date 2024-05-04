@@ -1,12 +1,5 @@
-import type { History, Location, Path, To } from "./history";
-import {
-  Action as HistoryAction,
-  createLocation,
-  createPath,
-  invariant,
-  parsePath,
-  warning,
-} from "./history";
+import type { History, Location, Path, To } from './history';
+import { Action as HistoryAction, createLocation, createPath, invariant, parsePath, warning } from './history';
 import type {
   AgnosticDataRouteMatch,
   AgnosticDataRouteObject,
@@ -35,7 +28,7 @@ import type {
   UIMatch,
   V7_FormMethod,
   V7_MutationFormMethod,
-} from "./utils";
+} from './utils';
 import {
   ErrorResponseImpl,
   ResultType,
@@ -49,7 +42,7 @@ import {
   matchRoutes,
   resolveTo,
   stripBasename,
-} from "./utils";
+} from './utils';
 
 ////////////////////////////////////////////////////////////////////////////////
 //#region Types and Constants
@@ -65,7 +58,7 @@ export interface Router {
    *
    * Return the basename for the router
    */
-  get basename(): RouterInit["basename"];
+  get basename(): RouterInit['basename'];
 
   /**
    * @internal
@@ -97,7 +90,7 @@ export interface Router {
    *
    * Return the window associated with the router
    */
-  get window(): RouterInit["window"];
+  get window(): RouterInit['window'];
 
   /**
    * @internal
@@ -163,12 +156,7 @@ export interface Router {
    * @param href    href to fetch
    * @param opts    Fetcher options, (method, submission, etc.)
    */
-  fetch(
-    key: string,
-    routeId: string,
-    href: string | null,
-    opts?: RouterFetchOptions
-  ): void;
+  fetch(key: string, routeId: string, href: string | null, opts?: RouterFetchOptions): void;
 
   /**
    * @internal
@@ -346,9 +334,7 @@ export interface RouterState {
 /**
  * Data that can be passed into hydrate a Router from SSR
  */
-export type HydrationState = Partial<
-  Pick<RouterState, "loaderData" | "actionData" | "errors">
->;
+export type HydrationState = Partial<Pick<RouterState, 'loaderData' | 'actionData' | 'errors'>>;
 
 /**
  * Future flags to toggle new feature behavior
@@ -384,12 +370,12 @@ export interface RouterInit {
  * State returned from a server-side query() call
  */
 export interface StaticHandlerContext {
-  basename: Router["basename"];
-  location: RouterState["location"];
-  matches: RouterState["matches"];
-  loaderData: RouterState["loaderData"];
-  actionData: RouterState["actionData"];
-  errors: RouterState["errors"];
+  basename: Router['basename'];
+  location: RouterState['location'];
+  matches: RouterState['matches'];
+  loaderData: RouterState['loaderData'];
+  actionData: RouterState['actionData'];
+  errors: RouterState['errors'];
   statusCode: number;
   loaderHeaders: Record<string, Headers>;
   actionHeaders: Record<string, Headers>;
@@ -410,10 +396,7 @@ export interface StaticHandler {
       unstable_dataStrategy?: DataStrategyFunction;
     }
   ): Promise<StaticHandlerContext | Response>;
-  queryRoute(
-    request: Request,
-    opts?: { routeId?: string; requestContext?: unknown }
-  ): Promise<any>;
+  queryRoute(request: Request, opts?: { routeId?: string; requestContext?: unknown }): Promise<any>;
 }
 
 type ViewTransitionOpts = {
@@ -450,7 +433,7 @@ export interface GetScrollPositionFunction {
   (): number;
 }
 
-export type RelativeRoutingType = "route" | "path";
+export type RelativeRoutingType = 'route' | 'path';
 
 // Allowed for any navigation or fetch
 type BaseNavigateOrFetchOptions = {
@@ -471,10 +454,7 @@ type BaseNavigateOptions = BaseNavigateOrFetchOptions & {
 type BaseSubmissionOptions = {
   formMethod?: HTMLFormMethod;
   formEncType?: FormEncType;
-} & (
-  | { formData: FormData; body?: undefined }
-  | { formData?: undefined; body: any }
-);
+} & ({ formData: FormData; body?: undefined } | { formData?: undefined; body: any });
 
 /**
  * Options for a navigate() call for a normal (non-submission) navigation
@@ -489,9 +469,7 @@ type SubmissionNavigateOptions = BaseNavigateOptions & BaseSubmissionOptions;
 /**
  * Options to pass to navigate() for a navigation
  */
-export type RouterNavigateOptions =
-  | LinkNavigateOptions
-  | SubmissionNavigateOptions;
+export type RouterNavigateOptions = LinkNavigateOptions | SubmissionNavigateOptions;
 
 /**
  * Options for a fetch() load
@@ -513,7 +491,7 @@ export type RouterFetchOptions = LoadFetchOptions | SubmitFetchOptions;
  */
 export type NavigationStates = {
   Idle: {
-    state: "idle";
+    state: 'idle';
     location: undefined;
     formMethod: undefined;
     formAction: undefined;
@@ -523,37 +501,37 @@ export type NavigationStates = {
     text: undefined;
   };
   Loading: {
-    state: "loading";
+    state: 'loading';
     location: Location;
-    formMethod: Submission["formMethod"] | undefined;
-    formAction: Submission["formAction"] | undefined;
-    formEncType: Submission["formEncType"] | undefined;
-    formData: Submission["formData"] | undefined;
-    json: Submission["json"] | undefined;
-    text: Submission["text"] | undefined;
+    formMethod: Submission['formMethod'] | undefined;
+    formAction: Submission['formAction'] | undefined;
+    formEncType: Submission['formEncType'] | undefined;
+    formData: Submission['formData'] | undefined;
+    json: Submission['json'] | undefined;
+    text: Submission['text'] | undefined;
   };
   Submitting: {
-    state: "submitting";
+    state: 'submitting';
     location: Location;
-    formMethod: Submission["formMethod"];
-    formAction: Submission["formAction"];
-    formEncType: Submission["formEncType"];
-    formData: Submission["formData"];
-    json: Submission["json"];
-    text: Submission["text"];
+    formMethod: Submission['formMethod'];
+    formAction: Submission['formAction'];
+    formEncType: Submission['formEncType'];
+    formData: Submission['formData'];
+    json: Submission['json'];
+    text: Submission['text'];
   };
 };
 
 export type Navigation = NavigationStates[keyof NavigationStates];
 
-export type RevalidationState = "idle" | "loading";
+export type RevalidationState = 'idle' | 'loading';
 
 /**
  * Potential states for fetchers
  */
 type FetcherStates<TData = any> = {
   Idle: {
-    state: "idle";
+    state: 'idle';
     formMethod: undefined;
     formAction: undefined;
     formEncType: undefined;
@@ -563,46 +541,45 @@ type FetcherStates<TData = any> = {
     data: TData | undefined;
   };
   Loading: {
-    state: "loading";
-    formMethod: Submission["formMethod"] | undefined;
-    formAction: Submission["formAction"] | undefined;
-    formEncType: Submission["formEncType"] | undefined;
-    text: Submission["text"] | undefined;
-    formData: Submission["formData"] | undefined;
-    json: Submission["json"] | undefined;
+    state: 'loading';
+    formMethod: Submission['formMethod'] | undefined;
+    formAction: Submission['formAction'] | undefined;
+    formEncType: Submission['formEncType'] | undefined;
+    text: Submission['text'] | undefined;
+    formData: Submission['formData'] | undefined;
+    json: Submission['json'] | undefined;
     data: TData | undefined;
   };
   Submitting: {
-    state: "submitting";
-    formMethod: Submission["formMethod"];
-    formAction: Submission["formAction"];
-    formEncType: Submission["formEncType"];
-    text: Submission["text"];
-    formData: Submission["formData"];
-    json: Submission["json"];
+    state: 'submitting';
+    formMethod: Submission['formMethod'];
+    formAction: Submission['formAction'];
+    formEncType: Submission['formEncType'];
+    text: Submission['text'];
+    formData: Submission['formData'];
+    json: Submission['json'];
     data: TData | undefined;
   };
 };
 
-export type Fetcher<TData = any> =
-  FetcherStates<TData>[keyof FetcherStates<TData>];
+export type Fetcher<TData = any> = FetcherStates<TData>[keyof FetcherStates<TData>];
 
 interface BlockerBlocked {
-  state: "blocked";
+  state: 'blocked';
   reset(): void;
   proceed(): void;
   location: Location;
 }
 
 interface BlockerUnblocked {
-  state: "unblocked";
+  state: 'unblocked';
   reset: undefined;
   proceed: undefined;
   location: undefined;
 }
 
 interface BlockerProceeding {
-  state: "proceeding";
+  state: 'proceeding';
   reset: undefined;
   proceed: undefined;
   location: Location;
@@ -610,11 +587,7 @@ interface BlockerProceeding {
 
 export type Blocker = BlockerUnblocked | BlockerBlocked | BlockerProceeding;
 
-export type BlockerFunction = (args: {
-  currentLocation: Location;
-  nextLocation: Location;
-  historyAction: HistoryAction;
-}) => boolean;
+export type BlockerFunction = (args: { currentLocation: Location; nextLocation: Location; historyAction: HistoryAction }) => boolean;
 
 interface ShortCircuitable {
   /**
@@ -638,11 +611,11 @@ interface HandleLoadersResult extends ShortCircuitable {
   /**
    * loaderData returned from the current set of loaders
    */
-  loaderData?: RouterState["loaderData"];
+  loaderData?: RouterState['loaderData'];
   /**
    * errors thrown from the current set of loaders
    */
-  errors?: RouterState["errors"];
+  errors?: RouterState['errors'];
 }
 
 /**
@@ -664,27 +637,17 @@ interface RevalidatingFetcher extends FetchLoadMatch {
   controller: AbortController | null;
 }
 
-const validMutationMethodsArr: MutationFormMethod[] = [
-  "post",
-  "put",
-  "patch",
-  "delete",
-];
-const validMutationMethods = new Set<MutationFormMethod>(
-  validMutationMethodsArr
-);
+const validMutationMethodsArr: MutationFormMethod[] = ['post', 'put', 'patch', 'delete'];
+const validMutationMethods = new Set<MutationFormMethod>(validMutationMethodsArr);
 
-const validRequestMethodsArr: FormMethod[] = [
-  "get",
-  ...validMutationMethodsArr,
-];
+const validRequestMethodsArr: FormMethod[] = ['get', ...validMutationMethodsArr];
 const validRequestMethods = new Set<FormMethod>(validRequestMethodsArr);
 
 const redirectStatusCodes = new Set([301, 302, 303, 307, 308]);
 const redirectPreserveMethodStatusCodes = new Set([307, 308]);
 
-export const IDLE_NAVIGATION: NavigationStates["Idle"] = {
-  state: "idle",
+export const IDLE_NAVIGATION: NavigationStates['Idle'] = {
+  state: 'idle',
   location: undefined,
   formMethod: undefined,
   formAction: undefined,
@@ -694,8 +657,8 @@ export const IDLE_NAVIGATION: NavigationStates["Idle"] = {
   text: undefined,
 };
 
-export const IDLE_FETCHER: FetcherStates["Idle"] = {
-  state: "idle",
+export const IDLE_FETCHER: FetcherStates['Idle'] = {
+  state: 'idle',
   data: undefined,
   formMethod: undefined,
   formAction: undefined,
@@ -706,7 +669,7 @@ export const IDLE_FETCHER: FetcherStates["Idle"] = {
 };
 
 export const IDLE_BLOCKER: BlockerUnblocked = {
-  state: "unblocked",
+  state: 'unblocked',
   proceed: undefined,
   reset: undefined,
   location: undefined,
@@ -718,7 +681,7 @@ const defaultMapRouteProperties: MapRoutePropertiesFunction = (route) => ({
   hasErrorBoundary: Boolean(route.hasErrorBoundary),
 });
 
-const TRANSITIONS_STORAGE_KEY = "remix-router-transitions";
+const TRANSITIONS_STORAGE_KEY = 'remix-router-transitions';
 
 //#endregion
 
@@ -730,21 +693,12 @@ const TRANSITIONS_STORAGE_KEY = "remix-router-transitions";
  * Create a router and listen to history POP navigations
  */
 export function createRouter(init: RouterInit): Router {
-  const routerWindow = init.window
-    ? init.window
-    : typeof window !== "undefined"
-    ? window
-    : undefined;
+  const routerWindow = init.window ? init.window : typeof window !== 'undefined' ? window : undefined;
   const isBrowser =
-    typeof routerWindow !== "undefined" &&
-    typeof routerWindow.document !== "undefined" &&
-    typeof routerWindow.document.createElement !== "undefined";
+    typeof routerWindow !== 'undefined' && typeof routerWindow.document !== 'undefined' && typeof routerWindow.document.createElement !== 'undefined';
   const isServer = !isBrowser;
 
-  invariant(
-    init.routes.length > 0,
-    "You must provide a non-empty routes array to createRouter"
-  );
+  invariant(init.routes.length > 0, 'You must provide a non-empty routes array to createRouter');
 
   let mapRouteProperties: MapRoutePropertiesFunction;
   if (init.mapRouteProperties) {
@@ -762,14 +716,9 @@ export function createRouter(init: RouterInit): Router {
   // Routes keyed by ID
   let manifest: RouteManifest = {};
   // Routes in tree format for matching
-  let dataRoutes = convertRoutesToDataRoutes(
-    init.routes,
-    mapRouteProperties,
-    undefined,
-    manifest
-  );
+  let dataRoutes = convertRoutesToDataRoutes(init.routes, mapRouteProperties, undefined, manifest);
   let inFlightDataRoutes: AgnosticDataRouteObject[] | undefined;
-  let basename = init.basename || "/";
+  let basename = init.basename || '/';
   let dataStrategyImpl = init.unstable_dataStrategy || defaultDataStrategy;
   // Config driven behavior flags
   let future: FutureConfig = {
@@ -835,24 +784,16 @@ export function createRouter(init: RouterInit): Router {
         return true;
       }
       // Explicitly opting-in to running on hydration
-      if (
-        typeof m.route.loader === "function" &&
-        m.route.loader.hydrate === true
-      ) {
+      if (typeof m.route.loader === 'function' && m.route.loader.hydrate === true) {
         return false;
       }
       // Otherwise, initialized if hydrated with data or an error
-      return (
-        (loaderData && loaderData[m.route.id] !== undefined) ||
-        (errors && errors[m.route.id] !== undefined)
-      );
+      return (loaderData && loaderData[m.route.id] !== undefined) || (errors && errors[m.route.id] !== undefined);
     };
 
     // If errors exist, don't consider routes below the boundary
     if (errors) {
-      let idx = initialMatches.findIndex(
-        (m) => errors![m.route.id] !== undefined
-      );
+      let idx = initialMatches.findIndex((m) => errors![m.route.id] !== undefined);
       initialized = initialMatches.slice(0, idx + 1).every(isRouteInitialized);
     } else {
       initialized = initialMatches.every(isRouteInitialized);
@@ -873,7 +814,7 @@ export function createRouter(init: RouterInit): Router {
     // Don't restore on initial updateState() if we were SSR'd
     restoreScrollPosition: init.hydrationData != null ? false : null,
     preventScrollReset: false,
-    revalidation: "idle",
+    revalidation: 'idle',
     loaderData: (init.hydrationData && init.hydrationData.loaderData) || {},
     actionData: (init.hydrationData && init.hydrationData.actionData) || null,
     errors: (init.hydrationData && init.hydrationData.errors) || initialErrors,
@@ -896,10 +837,7 @@ export function createRouter(init: RouterInit): Router {
   let pendingViewTransitionEnabled = false;
 
   // Store applied view transitions so we can apply them on POP
-  let appliedViewTransitions: Map<string, Set<string>> = new Map<
-    string,
-    Set<string>
-  >();
+  let appliedViewTransitions: Map<string, Set<string>> = new Map<string, Set<string>>();
 
   // Cleanup function for persisting applied transitions to sessionStorage
   let removePageHideEventListener: (() => void) | null = null;
@@ -969,72 +907,68 @@ export function createRouter(init: RouterInit): Router {
   function initialize() {
     // If history informs us of a POP navigation, start the navigation but do not update
     // state.  We'll update our own state once the navigation completes
-    unlistenHistory = init.history.listen(
-      ({ action: historyAction, location, delta }) => {
-        // Ignore this event if it was just us resetting the URL from a
-        // blocked POP navigation
-        if (ignoreNextHistoryUpdate) {
-          ignoreNextHistoryUpdate = false;
-          return;
-        }
-
-        warning(
-          blockerFunctions.size === 0 || delta != null,
-          "You are trying to use a blocker on a POP navigation to a location " +
-            "that was not created by @remix-run/router. This will fail silently in " +
-            "production. This can happen if you are navigating outside the router " +
-            "via `window.history.pushState`/`window.location.hash` instead of using " +
-            "router navigation APIs.  This can also happen if you are using " +
-            "createHashRouter and the user manually changes the URL."
-        );
-
-        let blockerKey = shouldBlockNavigation({
-          currentLocation: state.location,
-          nextLocation: location,
-          historyAction,
-        });
-
-        if (blockerKey && delta != null) {
-          // Restore the URL to match the current UI, but don't update router state
-          ignoreNextHistoryUpdate = true;
-          init.history.go(delta * -1);
-
-          // Put the blocker into a blocked state
-          updateBlocker(blockerKey, {
-            state: "blocked",
-            location,
-            proceed() {
-              updateBlocker(blockerKey!, {
-                state: "proceeding",
-                proceed: undefined,
-                reset: undefined,
-                location,
-              });
-              // Re-do the same POP navigation we just blocked
-              init.history.go(delta);
-            },
-            reset() {
-              let blockers = new Map(state.blockers);
-              blockers.set(blockerKey!, IDLE_BLOCKER);
-              updateState({ blockers });
-            },
-          });
-          return;
-        }
-
-        return startNavigation(historyAction, location);
+    unlistenHistory = init.history.listen(({ action: historyAction, location, delta }) => {
+      // Ignore this event if it was just us resetting the URL from a
+      // blocked POP navigation
+      if (ignoreNextHistoryUpdate) {
+        ignoreNextHistoryUpdate = false;
+        return;
       }
-    );
+
+      warning(
+        blockerFunctions.size === 0 || delta != null,
+        'You are trying to use a blocker on a POP navigation to a location ' +
+          'that was not created by @remix-run/router. This will fail silently in ' +
+          'production. This can happen if you are navigating outside the router ' +
+          'via `window.history.pushState`/`window.location.hash` instead of using ' +
+          'router navigation APIs.  This can also happen if you are using ' +
+          'createHashRouter and the user manually changes the URL.'
+      );
+
+      let blockerKey = shouldBlockNavigation({
+        currentLocation: state.location,
+        nextLocation: location,
+        historyAction,
+      });
+
+      if (blockerKey && delta != null) {
+        // Restore the URL to match the current UI, but don't update router state
+        ignoreNextHistoryUpdate = true;
+        init.history.go(delta * -1);
+
+        // Put the blocker into a blocked state
+        updateBlocker(blockerKey, {
+          state: 'blocked',
+          location,
+          proceed() {
+            updateBlocker(blockerKey!, {
+              state: 'proceeding',
+              proceed: undefined,
+              reset: undefined,
+              location,
+            });
+            // Re-do the same POP navigation we just blocked
+            init.history.go(delta);
+          },
+          reset() {
+            let blockers = new Map(state.blockers);
+            blockers.set(blockerKey!, IDLE_BLOCKER);
+            updateState({ blockers });
+          },
+        });
+        return;
+      }
+
+      return startNavigation(historyAction, location);
+    });
 
     if (isBrowser) {
       // FIXME: This feels gross.  How can we cleanup the lines between
       // scrollRestoration/appliedTransitions persistance?
       restoreAppliedTransitions(routerWindow, appliedViewTransitions);
-      let _saveAppliedTransitions = () =>
-        persistAppliedTransitions(routerWindow, appliedViewTransitions);
-      routerWindow.addEventListener("pagehide", _saveAppliedTransitions);
-      removePageHideEventListener = () =>
-        routerWindow.removeEventListener("pagehide", _saveAppliedTransitions);
+      let _saveAppliedTransitions = () => persistAppliedTransitions(routerWindow, appliedViewTransitions);
+      routerWindow.addEventListener('pagehide', _saveAppliedTransitions);
+      removePageHideEventListener = () => routerWindow.removeEventListener('pagehide', _saveAppliedTransitions);
     }
 
     // Kick off initial data load if needed.  Use Pop to avoid modifying history
@@ -1091,7 +1025,7 @@ export function createRouter(init: RouterInit): Router {
 
     if (future.v7_fetcherPersist) {
       state.fetchers.forEach((fetcher, key) => {
-        if (fetcher.state === "idle") {
+        if (fetcher.state === 'idle') {
           if (deletedFetchers.has(key)) {
             // Unmounted from the UI and can be totally removed
             deletedFetchersKeys.push(key);
@@ -1129,7 +1063,7 @@ export function createRouter(init: RouterInit): Router {
   // - Can pass any other state in newState
   function completeNavigation(
     location: Location,
-    newState: Partial<Omit<RouterState, "action" | "location" | "navigation">>,
+    newState: Partial<Omit<RouterState, 'action' | 'location' | 'navigation'>>,
     { flushSync }: { flushSync?: boolean } = {}
   ): void {
     // Deduce if we're in a loading/actionReload state:
@@ -1141,7 +1075,7 @@ export function createRouter(init: RouterInit): Router {
       state.actionData != null &&
       state.navigation.formMethod != null &&
       isMutationMethod(state.navigation.formMethod) &&
-      state.navigation.state === "loading" &&
+      state.navigation.state === 'loading' &&
       location.state?._isRedirect !== true;
 
     let actionData: RouteData | null;
@@ -1161,14 +1095,7 @@ export function createRouter(init: RouterInit): Router {
     }
 
     // Always preserve any existing loaderData from re-used routes
-    let loaderData = newState.loaderData
-      ? mergeLoaderData(
-          state.loaderData,
-          newState.loaderData,
-          newState.matches || [],
-          newState.errors
-        )
-      : state.loaderData;
+    let loaderData = newState.loaderData ? mergeLoaderData(state.loaderData, newState.loaderData, newState.matches || [], newState.errors) : state.loaderData;
 
     // On a successful navigation we can assume we got through all blockers
     // so we can start fresh
@@ -1182,9 +1109,7 @@ export function createRouter(init: RouterInit): Router {
     // submission navigations unless they redirect
     let preventScrollReset =
       pendingPreventScrollReset === true ||
-      (state.navigation.formMethod != null &&
-        isMutationMethod(state.navigation.formMethod) &&
-        location.state?._isRedirect !== true);
+      (state.navigation.formMethod != null && isMutationMethod(state.navigation.formMethod) && location.state?._isRedirect !== true);
 
     if (inFlightDataRoutes) {
       dataRoutes = inFlightDataRoutes;
@@ -1244,11 +1169,8 @@ export function createRouter(init: RouterInit): Router {
         location,
         initialized: true,
         navigation: IDLE_NAVIGATION,
-        revalidation: "idle",
-        restoreScrollPosition: getSavedScrollPosition(
-          location,
-          newState.matches || state.matches
-        ),
+        revalidation: 'idle',
+        restoreScrollPosition: getSavedScrollPosition(location, newState.matches || state.matches),
         preventScrollReset,
         blockers,
       },
@@ -1270,11 +1192,8 @@ export function createRouter(init: RouterInit): Router {
 
   // Trigger a navigation event, which can either be a numerical POP or a PUSH
   // replace with an optional submission
-  async function navigate(
-    to: number | To | null,
-    opts?: RouterNavigateOptions
-  ): Promise<void> {
-    if (typeof to === "number") {
+  async function navigate(to: number | To | null, opts?: RouterNavigateOptions): Promise<void> {
+    if (typeof to === 'number') {
       init.history.go(to);
       return;
     }
@@ -1289,12 +1208,7 @@ export function createRouter(init: RouterInit): Router {
       opts?.fromRouteId,
       opts?.relative
     );
-    let { path, submission, error } = normalizeNavigateOptions(
-      future.v7_normalizeFormMethod,
-      false,
-      normalizedPath,
-      opts
-    );
+    let { path, submission, error } = normalizeNavigateOptions(future.v7_normalizeFormMethod, false, normalizedPath, opts);
 
     let currentLocation = state.location;
     let nextLocation = createLocation(state.location, path, opts && opts.state);
@@ -1317,11 +1231,7 @@ export function createRouter(init: RouterInit): Router {
       historyAction = HistoryAction.Replace;
     } else if (userReplace === false) {
       // no-op
-    } else if (
-      submission != null &&
-      isMutationMethod(submission.formMethod) &&
-      submission.formAction === state.location.pathname + state.location.search
-    ) {
+    } else if (submission != null && isMutationMethod(submission.formMethod) && submission.formAction === state.location.pathname + state.location.search) {
       // By default on submissions to the current location we REPLACE so that
       // users don't have to double-click the back button to get to the prior
       // location.  If the user redirects to a different location from the
@@ -1329,10 +1239,7 @@ export function createRouter(init: RouterInit): Router {
       historyAction = HistoryAction.Replace;
     }
 
-    let preventScrollReset =
-      opts && "preventScrollReset" in opts
-        ? opts.preventScrollReset === true
-        : undefined;
+    let preventScrollReset = opts && 'preventScrollReset' in opts ? opts.preventScrollReset === true : undefined;
 
     let flushSync = (opts && opts.unstable_flushSync) === true;
 
@@ -1345,11 +1252,11 @@ export function createRouter(init: RouterInit): Router {
     if (blockerKey) {
       // Put the blocker into a blocked state
       updateBlocker(blockerKey, {
-        state: "blocked",
+        state: 'blocked',
         location: nextLocation,
         proceed() {
           updateBlocker(blockerKey!, {
-            state: "proceeding",
+            state: 'proceeding',
             proceed: undefined,
             reset: undefined,
             location: nextLocation,
@@ -1383,18 +1290,18 @@ export function createRouter(init: RouterInit): Router {
   // loaders during the next loader round
   function revalidate() {
     interruptActiveLoads();
-    updateState({ revalidation: "loading" });
+    updateState({ revalidation: 'loading' });
 
     // If we're currently submitting an action, we don't need to start a new
     // navigation, we'll just let the follow up loader execution call all loaders
-    if (state.navigation.state === "submitting") {
+    if (state.navigation.state === 'submitting') {
       return;
     }
 
     // If we're currently in an idle state, start a new navigation for the current
     // action/location and mark it as uninterrupted, which will skip the history
     // update in completeNavigation
-    if (state.navigation.state === "idle") {
+    if (state.navigation.state === 'idle') {
       startNavigation(state.historyAction, state.location, {
         startUninterruptedRevalidation: true,
       });
@@ -1404,11 +1311,7 @@ export function createRouter(init: RouterInit): Router {
     // Otherwise, if we're currently in a loading state, just start a new
     // navigation to the navigation.location but do not trigger an uninterrupted
     // revalidation so that history correctly updates once the navigation completes
-    startNavigation(
-      pendingAction || state.historyAction,
-      state.navigation.location,
-      { overrideNavigation: state.navigation }
-    );
+    startNavigation(pendingAction || state.historyAction, state.navigation.location, { overrideNavigation: state.navigation });
   }
 
   // Start a navigation to the given action/location.  Can optionally provide a
@@ -1436,8 +1339,7 @@ export function createRouter(init: RouterInit): Router {
     pendingNavigationController && pendingNavigationController.abort();
     pendingNavigationController = null;
     pendingAction = historyAction;
-    isUninterruptedRevalidation =
-      (opts && opts.startUninterruptedRevalidation) === true;
+    isUninterruptedRevalidation = (opts && opts.startUninterruptedRevalidation) === true;
 
     // Save the current scroll position every time we start a new navigation,
     // and track whether we should reset scroll on completion
@@ -1454,8 +1356,7 @@ export function createRouter(init: RouterInit): Router {
     // Short circuit with a 404 on the root error boundary if we match nothing
     if (!matches) {
       let error = getInternalRouterError(404, { pathname: location.pathname });
-      let { matches: notFoundMatches, route } =
-        getShortCircuitMatches(routesToUse);
+      let { matches: notFoundMatches, route } = getShortCircuitMatches(routesToUse);
       // Cancel all pending deferred on 404s since we don't keep any routes
       cancelActiveDeferreds();
       completeNavigation(
@@ -1490,12 +1391,7 @@ export function createRouter(init: RouterInit): Router {
 
     // Create a controller/Request for this navigation
     pendingNavigationController = new AbortController();
-    let request = createClientSideRequest(
-      init.history,
-      location,
-      pendingNavigationController.signal,
-      opts && opts.submission
-    );
+    let request = createClientSideRequest(init.history, location, pendingNavigationController.signal, opts && opts.submission);
     let pendingActionResult: PendingActionResult | undefined;
 
     if (opts && opts.pendingError) {
@@ -1503,23 +1399,10 @@ export function createRouter(init: RouterInit): Router {
       // with binary FormData so assign here and skip to handleLoaders.  That
       // way we handle calling loaders above the boundary etc.  It's not really
       // different from an actionError in that sense.
-      pendingActionResult = [
-        findNearestBoundary(matches).route.id,
-        { type: ResultType.error, error: opts.pendingError },
-      ];
-    } else if (
-      opts &&
-      opts.submission &&
-      isMutationMethod(opts.submission.formMethod)
-    ) {
+      pendingActionResult = [findNearestBoundary(matches).route.id, { type: ResultType.error, error: opts.pendingError }];
+    } else if (opts && opts.submission && isMutationMethod(opts.submission.formMethod)) {
       // Call action if we received an action submission
-      let actionResult = await handleAction(
-        request,
-        location,
-        opts.submission,
-        matches,
-        { replace: opts.replace, flushSync }
-      );
+      let actionResult = await handleAction(request, location, opts.submission, matches, { replace: opts.replace, flushSync });
 
       if (actionResult.shortCircuited) {
         return;
@@ -1530,11 +1413,7 @@ export function createRouter(init: RouterInit): Router {
       flushSync = false;
 
       // Create a GET request for the loaders
-      request = createClientSideRequest(
-        init.history,
-        request.url,
-        request.signal
-      );
+      request = createClientSideRequest(init.history, request.url, request.signal);
     }
 
     // Call loaders
@@ -1597,12 +1476,7 @@ export function createRouter(init: RouterInit): Router {
         }),
       };
     } else {
-      let results = await callDataStrategy(
-        "action",
-        request,
-        [actionMatch],
-        matches
-      );
+      let results = await callDataStrategy('action', request, [actionMatch], matches);
       result = results[0];
 
       if (request.signal.aborted) {
@@ -1618,11 +1492,7 @@ export function createRouter(init: RouterInit): Router {
         // If the user didn't explicity indicate replace behavior, replace if
         // we redirected to the exact same location we're currently at to avoid
         // double back-buttons
-        let location = normalizeRedirectLocation(
-          result.response.headers.get("Location")!,
-          new URL(request.url),
-          basename
-        );
+        let location = normalizeRedirectLocation(result.response.headers.get('Location')!, new URL(request.url), basename);
         replace = location === state.location.pathname + state.location.search;
       }
       await startRedirectNavigation(request, result, {
@@ -1633,7 +1503,7 @@ export function createRouter(init: RouterInit): Router {
     }
 
     if (isDeferredResult(result)) {
-      throw getInternalRouterError(400, { type: "defer-action" });
+      throw getInternalRouterError(400, { type: 'defer-action' });
     }
 
     if (isErrorResult(result)) {
@@ -1674,15 +1544,11 @@ export function createRouter(init: RouterInit): Router {
     pendingActionResult?: PendingActionResult
   ): Promise<HandleLoadersResult> {
     // Figure out the right navigation we want to use for data loading
-    let loadingNavigation =
-      overrideNavigation || getLoadingNavigation(location, submission);
+    let loadingNavigation = overrideNavigation || getLoadingNavigation(location, submission);
 
     // If this was a redirect from an action we don't have a "submission" but
     // we have it on the loading navigation so use that if available
-    let activeSubmission =
-      submission ||
-      fetcherSubmission ||
-      getSubmissionFromNavigation(loadingNavigation);
+    let activeSubmission = submission || fetcherSubmission || getSubmissionFromNavigation(loadingNavigation);
 
     let routesToUse = inFlightDataRoutes || dataRoutes;
     let [matchesToLoad, revalidatingFetchers] = getMatchesToLoad(
@@ -1708,9 +1574,7 @@ export function createRouter(init: RouterInit): Router {
     // about to reload.  Note that if this is an action reload we would have
     // already cancelled all pending deferreds so this would be a no-op
     cancelActiveDeferreds(
-      (routeId) =>
-        !(matches && matches.some((m) => m.route.id === routeId)) ||
-        (matchesToLoad && matchesToLoad.some((m) => m.route.id === routeId))
+      (routeId) => !(matches && matches.some((m) => m.route.id === routeId)) || (matchesToLoad && matchesToLoad.some((m) => m.route.id === routeId))
     );
 
     pendingNavigationLoadId = ++incrementingLoadId;
@@ -1724,10 +1588,7 @@ export function createRouter(init: RouterInit): Router {
           matches,
           loaderData: {},
           // Commit pending error if we're short circuiting
-          errors:
-            pendingActionResult && isErrorResult(pendingActionResult[1])
-              ? { [pendingActionResult[0]]: pendingActionResult[1].error }
-              : null,
+          errors: pendingActionResult && isErrorResult(pendingActionResult[1]) ? { [pendingActionResult[0]]: pendingActionResult[1].error } : null,
           ...getActionDataForCommit(pendingActionResult),
           ...(updatedFetchers ? { fetchers: new Map(state.fetchers) } : {}),
         },
@@ -1742,16 +1603,10 @@ export function createRouter(init: RouterInit): Router {
     // a revalidation interrupting an actionReload)
     // If we have partialHydration enabled, then don't update the state for the
     // initial data load since it's not a "navigation"
-    if (
-      !isUninterruptedRevalidation &&
-      (!future.v7_partialHydration || !initialHydration)
-    ) {
+    if (!isUninterruptedRevalidation && (!future.v7_partialHydration || !initialHydration)) {
       revalidatingFetchers.forEach((rf) => {
         let fetcher = state.fetchers.get(rf.key);
-        let revalidatingFetcher = getLoadingFetcher(
-          undefined,
-          fetcher ? fetcher.data : undefined
-        );
+        let revalidatingFetcher = getLoadingFetcher(undefined, fetcher ? fetcher.data : undefined);
         state.fetchers.set(rf.key, revalidatingFetcher);
       });
 
@@ -1775,9 +1630,7 @@ export function createRouter(init: RouterInit): Router {
         {
           navigation: loadingNavigation,
           ...(actionData !== undefined ? { actionData } : {}),
-          ...(revalidatingFetchers.length > 0
-            ? { fetchers: new Map(state.fetchers) }
-            : {}),
+          ...(revalidatingFetchers.length > 0 ? { fetchers: new Map(state.fetchers) } : {}),
         },
         {
           flushSync,
@@ -1798,23 +1651,12 @@ export function createRouter(init: RouterInit): Router {
     });
 
     // Proxy navigation abort through to revalidation fetchers
-    let abortPendingFetchRevalidations = () =>
-      revalidatingFetchers.forEach((f) => abortFetcher(f.key));
+    let abortPendingFetchRevalidations = () => revalidatingFetchers.forEach((f) => abortFetcher(f.key));
     if (pendingNavigationController) {
-      pendingNavigationController.signal.addEventListener(
-        "abort",
-        abortPendingFetchRevalidations
-      );
+      pendingNavigationController.signal.addEventListener('abort', abortPendingFetchRevalidations);
     }
 
-    let { loaderResults, fetcherResults } =
-      await callLoadersAndMaybeResolveData(
-        state.matches,
-        matches,
-        matchesToLoad,
-        revalidatingFetchers,
-        request
-      );
+    let { loaderResults, fetcherResults } = await callLoadersAndMaybeResolveData(state.matches, matches, matchesToLoad, revalidatingFetchers, request);
 
     if (request.signal.aborted) {
       return { shortCircuited: true };
@@ -1824,10 +1666,7 @@ export function createRouter(init: RouterInit): Router {
     // circuited because fetchControllers would have been aborted and
     // reassigned to new controllers for the next navigation
     if (pendingNavigationController) {
-      pendingNavigationController.signal.removeEventListener(
-        "abort",
-        abortPendingFetchRevalidations
-      );
+      pendingNavigationController.signal.removeEventListener('abort', abortPendingFetchRevalidations);
     }
     revalidatingFetchers.forEach((rf) => fetchControllers.delete(rf.key));
 
@@ -1838,8 +1677,7 @@ export function createRouter(init: RouterInit): Router {
         // If this redirect came from a fetcher make sure we mark it in
         // fetchRedirectIds so it doesn't get revalidated on the next set of
         // loader executions
-        let fetcherKey =
-          revalidatingFetchers[redirect.idx - matchesToLoad.length].key;
+        let fetcherKey = revalidatingFetchers[redirect.idx - matchesToLoad.length].key;
         fetchRedirectIds.add(fetcherKey);
       }
       await startRedirectNavigation(request, redirect.result, {
@@ -1883,8 +1721,7 @@ export function createRouter(init: RouterInit): Router {
 
     let updatedFetchers = markFetchRedirectsDone();
     let didAbortFetchLoads = abortStaleFetchLoads(pendingNavigationLoadId);
-    let shouldUpdateFetchers =
-      updatedFetchers || didAbortFetchLoads || revalidatingFetchers.length > 0;
+    let shouldUpdateFetchers = updatedFetchers || didAbortFetchLoads || revalidatingFetchers.length > 0;
 
     return {
       loaderData,
@@ -1894,17 +1731,12 @@ export function createRouter(init: RouterInit): Router {
   }
 
   // Trigger a fetcher load/submit for the given fetcher key
-  function fetch(
-    key: string,
-    routeId: string,
-    href: string | null,
-    opts?: RouterFetchOptions
-  ) {
+  function fetch(key: string, routeId: string, href: string | null, opts?: RouterFetchOptions) {
     if (isServer) {
       throw new Error(
         "router.fetch() was called during the server render, but it shouldn't be. " +
-          "You are likely calling a useFetcher() method in the body of your component. " +
-          "Try moving it to a useEffect or a callback."
+          'You are likely calling a useFetcher() method in the body of your component. ' +
+          'Try moving it to a useEffect or a callback.'
       );
     }
 
@@ -1925,21 +1757,11 @@ export function createRouter(init: RouterInit): Router {
     let matches = matchRoutes(routesToUse, normalizedPath, basename);
 
     if (!matches) {
-      setFetcherError(
-        key,
-        routeId,
-        getInternalRouterError(404, { pathname: normalizedPath }),
-        { flushSync }
-      );
+      setFetcherError(key, routeId, getInternalRouterError(404, { pathname: normalizedPath }), { flushSync });
       return;
     }
 
-    let { path, submission, error } = normalizeNavigateOptions(
-      future.v7_normalizeFormMethod,
-      true,
-      normalizedPath,
-      opts
-    );
+    let { path, submission, error } = normalizeNavigateOptions(future.v7_normalizeFormMethod, true, normalizedPath, opts);
 
     if (error) {
       setFetcherError(key, routeId, error, { flushSync });
@@ -1951,30 +1773,14 @@ export function createRouter(init: RouterInit): Router {
     pendingPreventScrollReset = (opts && opts.preventScrollReset) === true;
 
     if (submission && isMutationMethod(submission.formMethod)) {
-      handleFetcherAction(
-        key,
-        routeId,
-        path,
-        match,
-        matches,
-        flushSync,
-        submission
-      );
+      handleFetcherAction(key, routeId, path, match, matches, flushSync, submission);
       return;
     }
 
     // Store off the match so we can call it's shouldRevalidate on subsequent
     // revalidations
     fetchLoadMatches.set(key, { routeId, path });
-    handleFetcherLoader(
-      key,
-      routeId,
-      path,
-      match,
-      matches,
-      flushSync,
-      submission
-    );
+    handleFetcherLoader(key, routeId, path, match, matches, flushSync, submission);
   }
 
   // Call the action for the matched fetcher.submit(), and then handle redirects,
@@ -2009,21 +1815,11 @@ export function createRouter(init: RouterInit): Router {
 
     // Call the action for the fetcher
     let abortController = new AbortController();
-    let fetchRequest = createClientSideRequest(
-      init.history,
-      path,
-      abortController.signal,
-      submission
-    );
+    let fetchRequest = createClientSideRequest(init.history, path, abortController.signal, submission);
     fetchControllers.set(key, abortController);
 
     let originatingLoadId = incrementingLoadId;
-    let actionResults = await callDataStrategy(
-      "action",
-      fetchRequest,
-      [match],
-      requestMatches
-    );
+    let actionResults = await callDataStrategy('action', fetchRequest, [match], requestMatches);
     let actionResult = actionResults[0];
 
     if (fetchRequest.signal.aborted) {
@@ -2071,22 +1867,15 @@ export function createRouter(init: RouterInit): Router {
     }
 
     if (isDeferredResult(actionResult)) {
-      throw getInternalRouterError(400, { type: "defer-action" });
+      throw getInternalRouterError(400, { type: 'defer-action' });
     }
 
     // Start the data load for current matches, or the next location if we're
     // in the middle of a navigation
     let nextLocation = state.navigation.location || state.location;
-    let revalidationRequest = createClientSideRequest(
-      init.history,
-      nextLocation,
-      abortController.signal
-    );
+    let revalidationRequest = createClientSideRequest(init.history, nextLocation, abortController.signal);
     let routesToUse = inFlightDataRoutes || dataRoutes;
-    let matches =
-      state.navigation.state !== "idle"
-        ? matchRoutes(routesToUse, state.navigation.location, basename)
-        : state.matches;
+    let matches = state.navigation.state !== 'idle' ? matchRoutes(routesToUse, state.navigation.location, basename) : state.matches;
 
     invariant(matches, "Didn't find any matches after fetcher action");
 
@@ -2123,10 +1912,7 @@ export function createRouter(init: RouterInit): Router {
       .forEach((rf) => {
         let staleKey = rf.key;
         let existingFetcher = state.fetchers.get(staleKey);
-        let revalidatingFetcher = getLoadingFetcher(
-          undefined,
-          existingFetcher ? existingFetcher.data : undefined
-        );
+        let revalidatingFetcher = getLoadingFetcher(undefined, existingFetcher ? existingFetcher.data : undefined);
         state.fetchers.set(staleKey, revalidatingFetcher);
         if (fetchControllers.has(staleKey)) {
           abortFetcher(staleKey);
@@ -2138,31 +1924,23 @@ export function createRouter(init: RouterInit): Router {
 
     updateState({ fetchers: new Map(state.fetchers) });
 
-    let abortPendingFetchRevalidations = () =>
-      revalidatingFetchers.forEach((rf) => abortFetcher(rf.key));
+    let abortPendingFetchRevalidations = () => revalidatingFetchers.forEach((rf) => abortFetcher(rf.key));
 
-    abortController.signal.addEventListener(
-      "abort",
-      abortPendingFetchRevalidations
+    abortController.signal.addEventListener('abort', abortPendingFetchRevalidations);
+
+    let { loaderResults, fetcherResults } = await callLoadersAndMaybeResolveData(
+      state.matches,
+      matches,
+      matchesToLoad,
+      revalidatingFetchers,
+      revalidationRequest
     );
-
-    let { loaderResults, fetcherResults } =
-      await callLoadersAndMaybeResolveData(
-        state.matches,
-        matches,
-        matchesToLoad,
-        revalidatingFetchers,
-        revalidationRequest
-      );
 
     if (abortController.signal.aborted) {
       return;
     }
 
-    abortController.signal.removeEventListener(
-      "abort",
-      abortPendingFetchRevalidations
-    );
+    abortController.signal.removeEventListener('abort', abortPendingFetchRevalidations);
 
     fetchReloadIds.delete(key);
     fetchControllers.delete(key);
@@ -2174,8 +1952,7 @@ export function createRouter(init: RouterInit): Router {
         // If this redirect came from a fetcher make sure we mark it in
         // fetchRedirectIds so it doesn't get revalidated on the next set of
         // loader executions
-        let fetcherKey =
-          revalidatingFetchers[redirect.idx - matchesToLoad.length].key;
+        let fetcherKey = revalidatingFetchers[redirect.idx - matchesToLoad.length].key;
         fetchRedirectIds.add(fetcherKey);
       }
       return startRedirectNavigation(revalidationRequest, redirect.result);
@@ -2205,11 +1982,8 @@ export function createRouter(init: RouterInit): Router {
     // If we are currently in a navigation loading state and this fetcher is
     // more recent than the navigation, we want the newer data so abort the
     // navigation and complete it with the fetcher data
-    if (
-      state.navigation.state === "loading" &&
-      loadId > pendingNavigationLoadId
-    ) {
-      invariant(pendingAction, "Expected pending action");
+    if (state.navigation.state === 'loading' && loadId > pendingNavigationLoadId) {
+      invariant(pendingAction, 'Expected pending action');
       pendingNavigationController && pendingNavigationController.abort();
 
       completeNavigation(state.navigation.location, {
@@ -2224,12 +1998,7 @@ export function createRouter(init: RouterInit): Router {
       // manually merge here since we aren't going through completeNavigation
       updateState({
         errors,
-        loaderData: mergeLoaderData(
-          state.loaderData,
-          loaderData,
-          matches,
-          errors
-        ),
+        loaderData: mergeLoaderData(state.loaderData, loaderData, matches, errors),
         fetchers: new Map(state.fetchers),
       });
       isRevalidationRequired = false;
@@ -2247,31 +2016,15 @@ export function createRouter(init: RouterInit): Router {
     submission?: Submission
   ) {
     let existingFetcher = state.fetchers.get(key);
-    updateFetcherState(
-      key,
-      getLoadingFetcher(
-        submission,
-        existingFetcher ? existingFetcher.data : undefined
-      ),
-      { flushSync }
-    );
+    updateFetcherState(key, getLoadingFetcher(submission, existingFetcher ? existingFetcher.data : undefined), { flushSync });
 
     // Call the loader for this fetcher route match
     let abortController = new AbortController();
-    let fetchRequest = createClientSideRequest(
-      init.history,
-      path,
-      abortController.signal
-    );
+    let fetchRequest = createClientSideRequest(init.history, path, abortController.signal);
     fetchControllers.set(key, abortController);
 
     let originatingLoadId = incrementingLoadId;
-    let results = await callDataStrategy(
-      "loader",
-      fetchRequest,
-      [match],
-      matches
-    );
+    let results = await callDataStrategy('loader', fetchRequest, [match], matches);
     let result = results[0];
 
     // Deferred isn't supported for fetcher loads, await everything and treat it
@@ -2279,9 +2032,7 @@ export function createRouter(init: RouterInit): Router {
     // fetcher gets aborted, so we just leave result untouched and short circuit
     // below if that happens
     if (isDeferredResult(result)) {
-      result =
-        (await resolveDeferredData(result, fetchRequest.signal, true)) ||
-        result;
+      result = (await resolveDeferredData(result, fetchRequest.signal, true)) || result;
     }
 
     // We can delete this so long as we weren't aborted by our our own fetcher
@@ -2321,7 +2072,7 @@ export function createRouter(init: RouterInit): Router {
       return;
     }
 
-    invariant(!isDeferredResult(result), "Unhandled fetcher deferred data");
+    invariant(!isDeferredResult(result), 'Unhandled fetcher deferred data');
 
     // Put the fetcher back into an idle state
     updateFetcherState(key, getDoneFetcher(result.data));
@@ -2359,17 +2110,13 @@ export function createRouter(init: RouterInit): Router {
       replace?: boolean;
     } = {}
   ) {
-    if (redirect.response.headers.has("X-Remix-Revalidate")) {
+    if (redirect.response.headers.has('X-Remix-Revalidate')) {
       isRevalidationRequired = true;
     }
 
-    let location = redirect.response.headers.get("Location");
-    invariant(location, "Expected a Location header on the redirect Response");
-    location = normalizeRedirectLocation(
-      location,
-      new URL(request.url),
-      basename
-    );
+    let location = redirect.response.headers.get('Location');
+    invariant(location, 'Expected a Location header on the redirect Response');
+    location = normalizeRedirectLocation(location, new URL(request.url), basename);
     let redirectLocation = createLocation(state.location, location, {
       _isRedirect: true,
     });
@@ -2377,7 +2124,7 @@ export function createRouter(init: RouterInit): Router {
     if (isBrowser) {
       let isDocumentReload = false;
 
-      if (redirect.response.headers.has("X-Remix-Reload-Document")) {
+      if (redirect.response.headers.has('X-Remix-Reload-Document')) {
         // Hard reload if the response contained X-Remix-Reload-Document
         isDocumentReload = true;
       } else if (ABSOLUTE_URL_REGEX.test(location)) {
@@ -2403,19 +2150,12 @@ export function createRouter(init: RouterInit): Router {
     // redirect until the action/loaders have settled
     pendingNavigationController = null;
 
-    let redirectHistoryAction =
-      replace === true ? HistoryAction.Replace : HistoryAction.Push;
+    let redirectHistoryAction = replace === true ? HistoryAction.Replace : HistoryAction.Push;
 
     // Use the incoming submission if provided, fallback on the active one in
     // state.navigation
     let { formMethod, formAction, formEncType } = state.navigation;
-    if (
-      !submission &&
-      !fetcherSubmission &&
-      formMethod &&
-      formAction &&
-      formEncType
-    ) {
+    if (!submission && !fetcherSubmission && formMethod && formAction && formEncType) {
       submission = getSubmissionFromNavigation(state.navigation);
     }
 
@@ -2423,11 +2163,7 @@ export function createRouter(init: RouterInit): Router {
     // re-submit the GET/POST/PUT/PATCH/DELETE as a submission navigation to the
     // redirected location
     let activeSubmission = submission || fetcherSubmission;
-    if (
-      redirectPreserveMethodStatusCodes.has(redirect.response.status) &&
-      activeSubmission &&
-      isMutationMethod(activeSubmission.formMethod)
-    ) {
+    if (redirectPreserveMethodStatusCodes.has(redirect.response.status) && activeSubmission && isMutationMethod(activeSubmission.formMethod)) {
       await startNavigation(redirectHistoryAction, redirectLocation, {
         submission: {
           ...activeSubmission,
@@ -2439,10 +2175,7 @@ export function createRouter(init: RouterInit): Router {
     } else {
       // If we have a navigation submission, we will preserve it through the
       // redirect navigation
-      let overrideNavigation = getLoadingNavigation(
-        redirectLocation,
-        submission
-      );
+      let overrideNavigation = getLoadingNavigation(redirectLocation, submission);
       await startNavigation(redirectHistoryAction, redirectLocation, {
         overrideNavigation,
         // Send fetcher submissions through for shouldRevalidate
@@ -2456,21 +2189,13 @@ export function createRouter(init: RouterInit): Router {
   // Utility wrapper for calling dataStrategy client-side without having to
   // pass around the manifest, mapRouteProperties, etc.
   async function callDataStrategy(
-    type: "loader" | "action",
+    type: 'loader' | 'action',
     request: Request,
     matchesToLoad: AgnosticDataRouteMatch[],
     matches: AgnosticDataRouteMatch[]
   ): Promise<DataResult[]> {
     try {
-      let results = await callDataStrategyImpl(
-        dataStrategyImpl,
-        type,
-        request,
-        matchesToLoad,
-        matches,
-        manifest,
-        mapRouteProperties
-      );
+      let results = await callDataStrategyImpl(dataStrategyImpl, type, request, matchesToLoad, matches, manifest, mapRouteProperties);
 
       return await Promise.all(
         results.map((result, i) => {
@@ -2478,14 +2203,7 @@ export function createRouter(init: RouterInit): Router {
             let response = result.result as Response;
             return {
               type: ResultType.redirect,
-              response: normalizeRelativeRoutingRedirectResponse(
-                response,
-                request,
-                matchesToLoad[i].route.id,
-                matches,
-                basename,
-                future.v7_relativeSplatPath
-              ),
+              response: normalizeRelativeRoutingRedirectResponse(response, request, matchesToLoad[i].route.id, matches, basename, future.v7_relativeSplatPath),
             };
           }
 
@@ -2510,22 +2228,11 @@ export function createRouter(init: RouterInit): Router {
     request: Request
   ) {
     let [loaderResults, ...fetcherResults] = await Promise.all([
-      matchesToLoad.length
-        ? callDataStrategy("loader", request, matchesToLoad, matches)
-        : [],
+      matchesToLoad.length ? callDataStrategy('loader', request, matchesToLoad, matches) : [],
       ...fetchersToLoad.map((f) => {
         if (f.matches && f.match && f.controller) {
-          let fetcherRequest = createClientSideRequest(
-            init.history,
-            f.path,
-            f.controller.signal
-          );
-          return callDataStrategy(
-            "loader",
-            fetcherRequest,
-            [f.match],
-            f.matches
-          ).then((r) => r[0]);
+          let fetcherRequest = createClientSideRequest(init.history, f.path, f.controller.signal);
+          return callDataStrategy('loader', fetcherRequest, [f.match], f.matches).then((r) => r[0]);
         } else {
           return Promise.resolve<DataResult>({
             type: ResultType.error,
@@ -2578,24 +2285,12 @@ export function createRouter(init: RouterInit): Router {
     });
   }
 
-  function updateFetcherState(
-    key: string,
-    fetcher: Fetcher,
-    opts: { flushSync?: boolean } = {}
-  ) {
+  function updateFetcherState(key: string, fetcher: Fetcher, opts: { flushSync?: boolean } = {}) {
     state.fetchers.set(key, fetcher);
-    updateState(
-      { fetchers: new Map(state.fetchers) },
-      { flushSync: (opts && opts.flushSync) === true }
-    );
+    updateState({ fetchers: new Map(state.fetchers) }, { flushSync: (opts && opts.flushSync) === true });
   }
 
-  function setFetcherError(
-    key: string,
-    routeId: string,
-    error: any,
-    opts: { flushSync?: boolean } = {}
-  ) {
+  function setFetcherError(key: string, routeId: string, error: any, opts: { flushSync?: boolean } = {}) {
     let boundaryMatch = findNearestBoundary(state.matches, routeId);
     deleteFetcher(key);
     updateState(
@@ -2626,10 +2321,7 @@ export function createRouter(init: RouterInit): Router {
     // Don't abort the controller if this is a deletion of a fetcher.submit()
     // in it's loading phase since - we don't want to abort the corresponding
     // revalidation and want them to complete and land
-    if (
-      fetchControllers.has(key) &&
-      !(fetcher && fetcher.state === "loading" && fetchReloadIds.has(key))
-    ) {
+    if (fetchControllers.has(key) && !(fetcher && fetcher.state === 'loading' && fetchReloadIds.has(key))) {
       abortFetcher(key);
     }
     fetchLoadMatches.delete(key);
@@ -2675,7 +2367,7 @@ export function createRouter(init: RouterInit): Router {
     for (let key of fetchRedirectIds) {
       let fetcher = state.fetchers.get(key);
       invariant(fetcher, `Expected fetcher: ${key}`);
-      if (fetcher.state === "loading") {
+      if (fetcher.state === 'loading') {
         fetchRedirectIds.delete(key);
         doneKeys.push(key);
         updatedFetchers = true;
@@ -2691,7 +2383,7 @@ export function createRouter(init: RouterInit): Router {
       if (id < landedId) {
         let fetcher = state.fetchers.get(key);
         invariant(fetcher, `Expected fetcher: ${key}`);
-        if (fetcher.state === "loading") {
+        if (fetcher.state === 'loading') {
           abortFetcher(key);
           fetchReloadIds.delete(key);
           yeetedKeys.push(key);
@@ -2724,11 +2416,11 @@ export function createRouter(init: RouterInit): Router {
     // Poor mans state machine :)
     // https://mermaid.live/edit#pako:eNqVkc9OwzAMxl8l8nnjAYrEtDIOHEBIgwvKJTReGy3_lDpIqO27k6awMG0XcrLlnz87nwdonESogKXXBuE79rq75XZO3-yHds0RJVuv70YrPlUrCEe2HfrORS3rubqZfuhtpg5C9wk5tZ4VKcRUq88q9Z8RS0-48cE1iHJkL0ugbHuFLus9L6spZy8nX9MP2CNdomVaposqu3fGayT8T8-jJQwhepo_UtpgBQaDEUom04dZhAN1aJBDlUKJBxE1ceB2Smj0Mln-IBW5AFU2dwUiktt_2Qaq2dBfaKdEup85UV7Yd-dKjlnkabl2Pvr0DTkTreM
     invariant(
-      (blocker.state === "unblocked" && newBlocker.state === "blocked") ||
-        (blocker.state === "blocked" && newBlocker.state === "blocked") ||
-        (blocker.state === "blocked" && newBlocker.state === "proceeding") ||
-        (blocker.state === "blocked" && newBlocker.state === "unblocked") ||
-        (blocker.state === "proceeding" && newBlocker.state === "unblocked"),
+      (blocker.state === 'unblocked' && newBlocker.state === 'blocked') ||
+        (blocker.state === 'blocked' && newBlocker.state === 'blocked') ||
+        (blocker.state === 'blocked' && newBlocker.state === 'proceeding') ||
+        (blocker.state === 'blocked' && newBlocker.state === 'unblocked') ||
+        (blocker.state === 'proceeding' && newBlocker.state === 'unblocked'),
       `Invalid blocker state transition: ${blocker.state} -> ${newBlocker.state}`
     );
 
@@ -2753,14 +2445,14 @@ export function createRouter(init: RouterInit): Router {
     // We ony support a single active blocker at the moment since we don't have
     // any compelling use cases for multi-blocker yet
     if (blockerFunctions.size > 1) {
-      warning(false, "A router only supports one blocker at a time");
+      warning(false, 'A router only supports one blocker at a time');
     }
 
     let entries = Array.from(blockerFunctions.entries());
     let [blockerKey, blockerFunction] = entries[entries.length - 1];
     let blocker = state.blockers.get(blockerKey);
 
-    if (blocker && blocker.state === "proceeding") {
+    if (blocker && blocker.state === 'proceeding') {
       // If the blocker is currently proceeding, we don't need to re-check
       // it and can let this navigation continue
       return;
@@ -2773,9 +2465,7 @@ export function createRouter(init: RouterInit): Router {
     }
   }
 
-  function cancelActiveDeferreds(
-    predicate?: (routeId: string) => boolean
-  ): string[] {
+  function cancelActiveDeferreds(predicate?: (routeId: string) => boolean): string[] {
     let cancelledRouteIds: string[] = [];
     activeDeferreds.forEach((dfd, routeId) => {
       if (!predicate || predicate(routeId)) {
@@ -2792,11 +2482,7 @@ export function createRouter(init: RouterInit): Router {
 
   // Opt in to capturing and reporting scroll positions during navigations,
   // used by the <ScrollRestoration> component
-  function enableScrollRestoration(
-    positions: Record<string, number>,
-    getPosition: GetScrollPositionFunction,
-    getKey?: GetScrollRestorationKeyFunction
-  ) {
+  function enableScrollRestoration(positions: Record<string, number>, getPosition: GetScrollPositionFunction, getKey?: GetScrollRestorationKeyFunction) {
     savedScrollPositions = positions;
     getScrollPosition = getPosition;
     getScrollRestorationKey = getKey || null;
@@ -2830,24 +2516,18 @@ export function createRouter(init: RouterInit): Router {
     return location.key;
   }
 
-  function saveScrollPosition(
-    location: Location,
-    matches: AgnosticDataRouteMatch[]
-  ): void {
+  function saveScrollPosition(location: Location, matches: AgnosticDataRouteMatch[]): void {
     if (savedScrollPositions && getScrollPosition) {
       let key = getScrollKey(location, matches);
       savedScrollPositions[key] = getScrollPosition();
     }
   }
 
-  function getSavedScrollPosition(
-    location: Location,
-    matches: AgnosticDataRouteMatch[]
-  ): number | null {
+  function getSavedScrollPosition(location: Location, matches: AgnosticDataRouteMatch[]): number | null {
     if (savedScrollPositions) {
       let key = getScrollKey(location, matches);
       let y = savedScrollPositions[key];
-      if (typeof y === "number") {
+      if (typeof y === 'number') {
         return y;
       }
     }
@@ -2856,12 +2536,7 @@ export function createRouter(init: RouterInit): Router {
 
   function _internalSetRoutes(newRoutes: AgnosticDataRouteObject[]) {
     manifest = {};
-    inFlightDataRoutes = convertRoutesToDataRoutes(
-      newRoutes,
-      mapRouteProperties,
-      undefined,
-      manifest
-    );
+    inFlightDataRoutes = convertRoutesToDataRoutes(newRoutes, mapRouteProperties, undefined, manifest);
   }
 
   router = {
@@ -2910,7 +2585,7 @@ export function createRouter(init: RouterInit): Router {
 //#region createStaticHandler
 ////////////////////////////////////////////////////////////////////////////////
 
-export const UNSAFE_DEFERRED_SYMBOL = Symbol("deferred");
+export const UNSAFE_DEFERRED_SYMBOL = Symbol('deferred');
 
 /**
  * Future flags to toggle new feature behavior
@@ -2930,17 +2605,11 @@ export interface CreateStaticHandlerOptions {
   future?: Partial<StaticHandlerFutureConfig>;
 }
 
-export function createStaticHandler(
-  routes: AgnosticRouteObject[],
-  opts?: CreateStaticHandlerOptions
-): StaticHandler {
-  invariant(
-    routes.length > 0,
-    "You must provide a non-empty routes array to createStaticHandler"
-  );
+export function createStaticHandler(routes: AgnosticRouteObject[], opts?: CreateStaticHandlerOptions): StaticHandler {
+  invariant(routes.length > 0, 'You must provide a non-empty routes array to createStaticHandler');
 
   let manifest: RouteManifest = {};
-  let basename = (opts ? opts.basename : null) || "/";
+  let basename = (opts ? opts.basename : null) || '/';
   let mapRouteProperties: MapRoutePropertiesFunction;
   if (opts?.mapRouteProperties) {
     mapRouteProperties = opts.mapRouteProperties;
@@ -2960,12 +2629,7 @@ export function createStaticHandler(
     ...(opts ? opts.future : null),
   };
 
-  let dataRoutes = convertRoutesToDataRoutes(
-    routes,
-    mapRouteProperties,
-    undefined,
-    manifest
-  );
+  let dataRoutes = convertRoutesToDataRoutes(routes, mapRouteProperties, undefined, manifest);
 
   /**
    * The query() method is intended for document requests, in which we want to
@@ -3007,14 +2671,13 @@ export function createStaticHandler(
   ): Promise<StaticHandlerContext | Response> {
     let url = new URL(request.url);
     let method = request.method;
-    let location = createLocation("", createPath(url), null, "default");
+    let location = createLocation('', createPath(url), null, 'default');
     let matches = matchRoutes(dataRoutes, location, basename);
 
     // SSR supports HEAD requests while SPA doesn't
-    if (!isValidMethod(method) && method !== "HEAD") {
+    if (!isValidMethod(method) && method !== 'HEAD') {
       let error = getInternalRouterError(405, { method });
-      let { matches: methodNotAllowedMatches, route } =
-        getShortCircuitMatches(dataRoutes);
+      let { matches: methodNotAllowedMatches, route } = getShortCircuitMatches(dataRoutes);
       return {
         basename,
         location,
@@ -3031,8 +2694,7 @@ export function createStaticHandler(
       };
     } else if (!matches) {
       let error = getInternalRouterError(404, { pathname: location.pathname });
-      let { matches: notFoundMatches, route } =
-        getShortCircuitMatches(dataRoutes);
+      let { matches: notFoundMatches, route } = getShortCircuitMatches(dataRoutes);
       return {
         basename,
         location,
@@ -3049,15 +2711,7 @@ export function createStaticHandler(
       };
     }
 
-    let result = await queryImpl(
-      request,
-      location,
-      matches,
-      requestContext,
-      unstable_dataStrategy || null,
-      skipLoaderErrorBubbling === true,
-      null
-    );
+    let result = await queryImpl(request, location, matches, requestContext, unstable_dataStrategy || null, skipLoaderErrorBubbling === true, null);
     if (isResponse(result)) {
       return result;
     }
@@ -3094,28 +2748,20 @@ export function createStaticHandler(
    * - `opts.requestContext` is an optional server context that will be passed
    *    to actions/loaders in the `context` parameter
    */
-  async function queryRoute(
-    request: Request,
-    {
-      routeId,
-      requestContext,
-    }: { requestContext?: unknown; routeId?: string } = {}
-  ): Promise<any> {
+  async function queryRoute(request: Request, { routeId, requestContext }: { requestContext?: unknown; routeId?: string } = {}): Promise<any> {
     let url = new URL(request.url);
     let method = request.method;
-    let location = createLocation("", createPath(url), null, "default");
+    let location = createLocation('', createPath(url), null, 'default');
     let matches = matchRoutes(dataRoutes, location, basename);
 
     // SSR supports HEAD requests while SPA doesn't
-    if (!isValidMethod(method) && method !== "HEAD" && method !== "OPTIONS") {
+    if (!isValidMethod(method) && method !== 'HEAD' && method !== 'OPTIONS') {
       throw getInternalRouterError(405, { method });
     } else if (!matches) {
       throw getInternalRouterError(404, { pathname: location.pathname });
     }
 
-    let match = routeId
-      ? matches.find((m) => m.route.id === routeId)
-      : getTargetMatch(matches, location);
+    let match = routeId ? matches.find((m) => m.route.id === routeId) : getTargetMatch(matches, location);
 
     if (routeId && !match) {
       throw getInternalRouterError(403, {
@@ -3127,15 +2773,7 @@ export function createStaticHandler(
       throw getInternalRouterError(404, { pathname: location.pathname });
     }
 
-    let result = await queryImpl(
-      request,
-      location,
-      matches,
-      requestContext,
-      null,
-      false,
-      match
-    );
+    let result = await queryImpl(request, location, matches, requestContext, null, false, match);
 
     if (isResponse(result)) {
       return result;
@@ -3174,11 +2812,8 @@ export function createStaticHandler(
     unstable_dataStrategy: DataStrategyFunction | null,
     skipLoaderErrorBubbling: boolean,
     routeMatch: AgnosticDataRouteMatch | null
-  ): Promise<Omit<StaticHandlerContext, "location" | "basename"> | Response> {
-    invariant(
-      request.signal,
-      "query()/queryRoute() requests must contain an AbortController signal"
-    );
+  ): Promise<Omit<StaticHandlerContext, 'location' | 'basename'> | Response> {
+    invariant(request.signal, 'query()/queryRoute() requests must contain an AbortController signal');
 
     try {
       if (isMutationMethod(request.method.toLowerCase())) {
@@ -3194,14 +2829,7 @@ export function createStaticHandler(
         return result;
       }
 
-      let result = await loadRouteData(
-        request,
-        matches,
-        requestContext,
-        unstable_dataStrategy,
-        skipLoaderErrorBubbling,
-        routeMatch
-      );
+      let result = await loadRouteData(request, matches, requestContext, unstable_dataStrategy, skipLoaderErrorBubbling, routeMatch);
       return isResponse(result)
         ? result
         : {
@@ -3236,7 +2864,7 @@ export function createStaticHandler(
     unstable_dataStrategy: DataStrategyFunction | null,
     skipLoaderErrorBubbling: boolean,
     isRouteRequest: boolean
-  ): Promise<Omit<StaticHandlerContext, "location" | "basename"> | Response> {
+  ): Promise<Omit<StaticHandlerContext, 'location' | 'basename'> | Response> {
     let result: DataResult;
 
     if (!actionMatch.route.action && !actionMatch.route.lazy) {
@@ -3253,15 +2881,7 @@ export function createStaticHandler(
         error,
       };
     } else {
-      let results = await callDataStrategy(
-        "action",
-        request,
-        [actionMatch],
-        matches,
-        isRouteRequest,
-        requestContext,
-        unstable_dataStrategy
-      );
+      let results = await callDataStrategy('action', request, [actionMatch], matches, isRouteRequest, requestContext, unstable_dataStrategy);
       result = results[0];
 
       if (request.signal.aborted) {
@@ -3277,13 +2897,13 @@ export function createStaticHandler(
       throw new Response(null, {
         status: result.response.status,
         headers: {
-          Location: result.response.headers.get("Location")!,
+          Location: result.response.headers.get('Location')!,
         },
       });
     }
 
     if (isDeferredResult(result)) {
-      let error = getInternalRouterError(400, { type: "defer-action" });
+      let error = getInternalRouterError(400, { type: 'defer-action' });
       if (isRouteRequest) {
         throw error;
       }
@@ -3324,28 +2944,17 @@ export function createStaticHandler(
     if (isErrorResult(result)) {
       // Store off the pending error - we use it to determine which loaders
       // to call and will commit it when we complete the navigation
-      let boundaryMatch = skipLoaderErrorBubbling
-        ? actionMatch
-        : findNearestBoundary(matches, actionMatch.route.id);
+      let boundaryMatch = skipLoaderErrorBubbling ? actionMatch : findNearestBoundary(matches, actionMatch.route.id);
 
-      let context = await loadRouteData(
-        loaderRequest,
-        matches,
-        requestContext,
-        unstable_dataStrategy,
-        skipLoaderErrorBubbling,
-        null,
-        [boundaryMatch.route.id, result]
-      );
+      let context = await loadRouteData(loaderRequest, matches, requestContext, unstable_dataStrategy, skipLoaderErrorBubbling, null, [
+        boundaryMatch.route.id,
+        result,
+      ]);
 
       // action status codes take precedence over loader status codes
       return {
         ...context,
-        statusCode: isRouteErrorResponse(result.error)
-          ? result.error.status
-          : result.statusCode != null
-          ? result.statusCode
-          : 500,
+        statusCode: isRouteErrorResponse(result.error) ? result.error.status : result.statusCode != null ? result.statusCode : 500,
         actionData: null,
         actionHeaders: {
           ...(result.headers ? { [actionMatch.route.id]: result.headers } : {}),
@@ -3353,14 +2962,7 @@ export function createStaticHandler(
       };
     }
 
-    let context = await loadRouteData(
-      loaderRequest,
-      matches,
-      requestContext,
-      unstable_dataStrategy,
-      skipLoaderErrorBubbling,
-      null
-    );
+    let context = await loadRouteData(loaderRequest, matches, requestContext, unstable_dataStrategy, skipLoaderErrorBubbling, null);
 
     return {
       ...context,
@@ -3369,9 +2971,7 @@ export function createStaticHandler(
       },
       // action status codes take precedence over loader status codes
       ...(result.statusCode ? { statusCode: result.statusCode } : {}),
-      actionHeaders: result.headers
-        ? { [actionMatch.route.id]: result.headers }
-        : {},
+      actionHeaders: result.headers ? { [actionMatch.route.id]: result.headers } : {},
     };
   }
 
@@ -3383,21 +2983,11 @@ export function createStaticHandler(
     skipLoaderErrorBubbling: boolean,
     routeMatch: AgnosticDataRouteMatch | null,
     pendingActionResult?: PendingActionResult
-  ): Promise<
-    | Omit<
-        StaticHandlerContext,
-        "location" | "basename" | "actionData" | "actionHeaders"
-      >
-    | Response
-  > {
+  ): Promise<Omit<StaticHandlerContext, 'location' | 'basename' | 'actionData' | 'actionHeaders'> | Response> {
     let isRouteRequest = routeMatch != null;
 
     // Short circuit if we have no loaders to run (queryRoute())
-    if (
-      isRouteRequest &&
-      !routeMatch?.route.loader &&
-      !routeMatch?.route.lazy
-    ) {
+    if (isRouteRequest && !routeMatch?.route.loader && !routeMatch?.route.lazy) {
       throw getInternalRouterError(400, {
         method: request.method,
         pathname: new URL(request.url).pathname,
@@ -3410,19 +3000,14 @@ export function createStaticHandler(
       : pendingActionResult && isErrorResult(pendingActionResult[1])
       ? getLoaderMatchesUntilBoundary(matches, pendingActionResult[0])
       : matches;
-    let matchesToLoad = requestMatches.filter(
-      (m) => m.route.loader || m.route.lazy
-    );
+    let matchesToLoad = requestMatches.filter((m) => m.route.loader || m.route.lazy);
 
     // Short circuit if we have no loaders to run (query())
     if (matchesToLoad.length === 0) {
       return {
         matches,
         // Add a null for all matched routes for proper revalidation on the client
-        loaderData: matches.reduce(
-          (acc, m) => Object.assign(acc, { [m.route.id]: null }),
-          {}
-        ),
+        loaderData: matches.reduce((acc, m) => Object.assign(acc, { [m.route.id]: null }), {}),
         errors:
           pendingActionResult && isErrorResult(pendingActionResult[1])
             ? {
@@ -3435,15 +3020,7 @@ export function createStaticHandler(
       };
     }
 
-    let results = await callDataStrategy(
-      "loader",
-      request,
-      matchesToLoad,
-      matches,
-      isRouteRequest,
-      requestContext,
-      unstable_dataStrategy
-    );
+    let results = await callDataStrategy('loader', request, matchesToLoad, matches, isRouteRequest, requestContext, unstable_dataStrategy);
 
     if (request.signal.aborted) {
       throwStaticHandlerAbortedError(request, isRouteRequest, future);
@@ -3451,19 +3028,10 @@ export function createStaticHandler(
 
     // Process and commit output from loaders
     let activeDeferreds = new Map<string, DeferredData>();
-    let context = processRouteLoaderData(
-      matches,
-      matchesToLoad,
-      results,
-      pendingActionResult,
-      activeDeferreds,
-      skipLoaderErrorBubbling
-    );
+    let context = processRouteLoaderData(matches, matchesToLoad, results, pendingActionResult, activeDeferreds, skipLoaderErrorBubbling);
 
     // Add a null for any non-loader matches for proper revalidation on the client
-    let executedLoaders = new Set<string>(
-      matchesToLoad.map((match) => match.route.id)
-    );
+    let executedLoaders = new Set<string>(matchesToLoad.map((match) => match.route.id));
     matches.forEach((match) => {
       if (!executedLoaders.has(match.route.id)) {
         context.loaderData[match.route.id] = null;
@@ -3473,17 +3041,14 @@ export function createStaticHandler(
     return {
       ...context,
       matches,
-      activeDeferreds:
-        activeDeferreds.size > 0
-          ? Object.fromEntries(activeDeferreds.entries())
-          : null,
+      activeDeferreds: activeDeferreds.size > 0 ? Object.fromEntries(activeDeferreds.entries()) : null,
     };
   }
 
   // Utility wrapper for calling dataStrategy server-side without having to
   // pass around the manifest, mapRouteProperties, etc.
   async function callDataStrategy(
-    type: "loader" | "action",
+    type: 'loader' | 'action',
     request: Request,
     matchesToLoad: AgnosticDataRouteMatch[],
     matches: AgnosticDataRouteMatch[],
@@ -3507,14 +3072,7 @@ export function createStaticHandler(
         if (isRedirectHandlerResult(result)) {
           let response = result.result as Response;
           // Throw redirects and let the server handle them with an HTTP redirect
-          throw normalizeRelativeRoutingRedirectResponse(
-            response,
-            request,
-            matchesToLoad[i].route.id,
-            matches,
-            basename,
-            future.v7_relativeSplatPath
-          );
+          throw normalizeRelativeRoutingRedirectResponse(response, request, matchesToLoad[i].route.id, matches, basename, future.v7_relativeSplatPath);
         }
         if (isResponse(result.result) && isRouteRequest) {
           // For SSR single-route requests, we want to hand Responses back
@@ -3544,11 +3102,7 @@ export function createStaticHandler(
  * Given an existing StaticHandlerContext and an error thrown at render time,
  * provide an updated StaticHandlerContext suitable for a second SSR render
  */
-export function getStaticContextFromError(
-  routes: AgnosticDataRouteObject[],
-  context: StaticHandlerContext,
-  error: any
-) {
+export function getStaticContextFromError(routes: AgnosticDataRouteObject[], context: StaticHandlerContext, error: any) {
   let newContext: StaticHandlerContext = {
     ...context,
     statusCode: isRouteErrorResponse(error) ? error.status : 500,
@@ -3559,27 +3113,17 @@ export function getStaticContextFromError(
   return newContext;
 }
 
-function throwStaticHandlerAbortedError(
-  request: Request,
-  isRouteRequest: boolean,
-  future: StaticHandlerFutureConfig
-) {
+function throwStaticHandlerAbortedError(request: Request, isRouteRequest: boolean, future: StaticHandlerFutureConfig) {
   if (future.v7_throwAbortReason && request.signal.reason !== undefined) {
     throw request.signal.reason;
   }
 
-  let method = isRouteRequest ? "queryRoute" : "query";
+  let method = isRouteRequest ? 'queryRoute' : 'query';
   throw new Error(`${method}() call aborted: ${request.method} ${request.url}`);
 }
 
-function isSubmissionNavigation(
-  opts: BaseNavigateOrFetchOptions
-): opts is SubmissionNavigateOptions {
-  return (
-    opts != null &&
-    (("formData" in opts && opts.formData != null) ||
-      ("body" in opts && opts.body !== undefined))
-  );
+function isSubmissionNavigation(opts: BaseNavigateOrFetchOptions): opts is SubmissionNavigateOptions {
+  return opts != null && (('formData' in opts && opts.formData != null) || ('body' in opts && opts.body !== undefined));
 }
 
 function normalizeTo(
@@ -3612,10 +3156,10 @@ function normalizeTo(
 
   // Resolve the relative path
   let path = resolveTo(
-    to ? to : ".",
+    to ? to : '.',
     getResolveToMatches(contextualMatches, v7_relativeSplatPath),
     stripBasename(location.pathname, basename) || location.pathname,
-    relative === "path"
+    relative === 'path'
   );
 
   // When `to` is not specified we inherit search/hash from the current
@@ -3627,24 +3171,16 @@ function normalizeTo(
   }
 
   // Add an ?index param for matched index routes if we don't already have one
-  if (
-    (to == null || to === "" || to === ".") &&
-    activeRouteMatch &&
-    activeRouteMatch.route.index &&
-    !hasNakedIndexQuery(path.search)
-  ) {
-    path.search = path.search
-      ? path.search.replace(/^\?/, "?index&")
-      : "?index";
+  if ((to == null || to === '' || to === '.') && activeRouteMatch && activeRouteMatch.route.index && !hasNakedIndexQuery(path.search)) {
+    path.search = path.search ? path.search.replace(/^\?/, '?index&') : '?index';
   }
 
   // If we're operating within a basename, prepend it to the pathname.  If
   // this is a root navigation, then just use the raw basename which allows
   // the basename to have full control over the presence of a trailing slash
   // on root actions
-  if (prependBasename && basename !== "/") {
-    path.pathname =
-      path.pathname === "/" ? basename : joinPaths([basename, path.pathname]);
+  if (prependBasename && basename !== '/') {
+    path.pathname = path.pathname === '/' ? basename : joinPaths([basename, path.pathname]);
   }
 
   return createPath(path);
@@ -3676,33 +3212,27 @@ function normalizeNavigateOptions(
 
   let getInvalidBodyError = () => ({
     path,
-    error: getInternalRouterError(400, { type: "invalid-body" }),
+    error: getInternalRouterError(400, { type: 'invalid-body' }),
   });
 
   // Create a Submission on non-GET navigations
-  let rawFormMethod = opts.formMethod || "get";
-  let formMethod = normalizeFormMethod
-    ? (rawFormMethod.toUpperCase() as V7_FormMethod)
-    : (rawFormMethod.toLowerCase() as FormMethod);
+  let rawFormMethod = opts.formMethod || 'get';
+  let formMethod = normalizeFormMethod ? (rawFormMethod.toUpperCase() as V7_FormMethod) : (rawFormMethod.toLowerCase() as FormMethod);
   let formAction = stripHashFromPath(path);
 
   if (opts.body !== undefined) {
-    if (opts.formEncType === "text/plain") {
+    if (opts.formEncType === 'text/plain') {
       // text only support POST/PUT/PATCH/DELETE submissions
       if (!isMutationMethod(formMethod)) {
         return getInvalidBodyError();
       }
 
       let text =
-        typeof opts.body === "string"
+        typeof opts.body === 'string'
           ? opts.body
-          : opts.body instanceof FormData ||
-            opts.body instanceof URLSearchParams
+          : opts.body instanceof FormData || opts.body instanceof URLSearchParams
           ? // https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#plain-text-form-data
-            Array.from(opts.body.entries()).reduce(
-              (acc, [name, value]) => `${acc}${name}=${value}\n`,
-              ""
-            )
+            Array.from(opts.body.entries()).reduce((acc, [name, value]) => `${acc}${name}=${value}\n`, '')
           : String(opts.body);
 
       return {
@@ -3716,15 +3246,14 @@ function normalizeNavigateOptions(
           text,
         },
       };
-    } else if (opts.formEncType === "application/json") {
+    } else if (opts.formEncType === 'application/json') {
       // json only supports POST/PUT/PATCH/DELETE submissions
       if (!isMutationMethod(formMethod)) {
         return getInvalidBodyError();
       }
 
       try {
-        let json =
-          typeof opts.body === "string" ? JSON.parse(opts.body) : opts.body;
+        let json = typeof opts.body === 'string' ? JSON.parse(opts.body) : opts.body;
 
         return {
           path,
@@ -3743,10 +3272,7 @@ function normalizeNavigateOptions(
     }
   }
 
-  invariant(
-    typeof FormData === "function",
-    "FormData is not available in this environment"
-  );
+  invariant(typeof FormData === 'function', 'FormData is not available in this environment');
 
   let searchParams: URLSearchParams;
   let formData: FormData;
@@ -3775,8 +3301,7 @@ function normalizeNavigateOptions(
   let submission: Submission = {
     formMethod,
     formAction,
-    formEncType:
-      (opts && opts.formEncType) || "application/x-www-form-urlencoded",
+    formEncType: (opts && opts.formEncType) || 'application/x-www-form-urlencoded',
     formData,
     json: undefined,
     text: undefined,
@@ -3792,7 +3317,7 @@ function normalizeNavigateOptions(
   // resulting location since all loaders will run.  But fetcher GET submissions
   // only run a single loader so we need to preserve any incoming ?index params
   if (isFetcher && parsedPath.search && hasNakedIndexQuery(parsedPath.search)) {
-    searchParams.append("index", "");
+    searchParams.append('index', '');
   }
   parsedPath.search = `?${searchParams}`;
 
@@ -3801,10 +3326,7 @@ function normalizeNavigateOptions(
 
 // Filter out all routes below any caught error as they aren't going to
 // render so we don't need to load them
-function getLoaderMatchesUntilBoundary(
-  matches: AgnosticDataRouteMatch[],
-  boundaryId: string
-) {
+function getLoaderMatchesUntilBoundary(matches: AgnosticDataRouteMatch[], boundaryId: string) {
   let boundaryMatches = matches;
   if (boundaryId) {
     let index = matches.findIndex((m) => m.route.id === boundaryId);
@@ -3833,31 +3355,19 @@ function getMatchesToLoad(
   basename: string | undefined,
   pendingActionResult?: PendingActionResult
 ): [AgnosticDataRouteMatch[], RevalidatingFetcher[]] {
-  let actionResult = pendingActionResult
-    ? isErrorResult(pendingActionResult[1])
-      ? pendingActionResult[1].error
-      : pendingActionResult[1].data
-    : undefined;
+  let actionResult = pendingActionResult ? (isErrorResult(pendingActionResult[1]) ? pendingActionResult[1].error : pendingActionResult[1].data) : undefined;
   let currentUrl = history.createURL(state.location);
   let nextUrl = history.createURL(location);
 
   // Pick navigation matches that are net-new or qualify for revalidation
-  let boundaryId =
-    pendingActionResult && isErrorResult(pendingActionResult[1])
-      ? pendingActionResult[0]
-      : undefined;
-  let boundaryMatches = boundaryId
-    ? getLoaderMatchesUntilBoundary(matches, boundaryId)
-    : matches;
+  let boundaryId = pendingActionResult && isErrorResult(pendingActionResult[1]) ? pendingActionResult[0] : undefined;
+  let boundaryMatches = boundaryId ? getLoaderMatchesUntilBoundary(matches, boundaryId) : matches;
 
   // Don't revalidate loaders by default after action 4xx/5xx responses
   // when the flag is enabled.  They can still opt-into revalidation via
   // `shouldRevalidate` via `actionResult`
-  let actionStatus = pendingActionResult
-    ? pendingActionResult[1].statusCode
-    : undefined;
-  let shouldSkipRevalidation =
-    skipActionErrorRevalidation && actionStatus && actionStatus >= 400;
+  let actionStatus = pendingActionResult ? pendingActionResult[1].statusCode : undefined;
+  let shouldSkipRevalidation = skipActionErrorRevalidation && actionStatus && actionStatus >= 400;
 
   let navigationMatches = boundaryMatches.filter((match, index) => {
     let { route } = match;
@@ -3871,7 +3381,7 @@ function getMatchesToLoad(
     }
 
     if (isInitialLoad) {
-      if (typeof route.loader !== "function" || route.loader.hydrate) {
+      if (typeof route.loader !== 'function' || route.loader.hydrate) {
         return true;
       }
       return (
@@ -3882,10 +3392,7 @@ function getMatchesToLoad(
     }
 
     // Always call the loader on new route instances and pending defer cancellations
-    if (
-      isNewLoader(state.loaderData, state.matches[index], match) ||
-      cancelledDeferredRoutes.some((id) => id === match.route.id)
-    ) {
+    if (isNewLoader(state.loaderData, state.matches[index], match) || cancelledDeferredRoutes.some((id) => id === match.route.id)) {
       return true;
     }
 
@@ -3908,8 +3415,7 @@ function getMatchesToLoad(
         ? false
         : // Forced revalidation due to submission, useRevalidator, or X-Remix-Revalidate
           isRevalidationRequired ||
-          currentUrl.pathname + currentUrl.search ===
-            nextUrl.pathname + nextUrl.search ||
+          currentUrl.pathname + currentUrl.search === nextUrl.pathname + nextUrl.search ||
           // Search params affect all loaders
           currentUrl.search !== nextUrl.search ||
           isNewRouteInstance(currentRouteMatch, nextRouteMatch),
@@ -3924,11 +3430,7 @@ function getMatchesToLoad(
     //  - if fetcher won't be present in the subsequent render
     //    - no longer matches the URL (v7_fetcherPersist=false)
     //    - was unmounted but persisted due to v7_fetcherPersist=true
-    if (
-      isInitialLoad ||
-      !matches.some((m) => m.route.id === f.routeId) ||
-      deletedFetchers.has(key)
-    ) {
+    if (isInitialLoad || !matches.some((m) => m.route.id === f.routeId) || deletedFetchers.has(key)) {
       return;
     }
 
@@ -3963,11 +3465,7 @@ function getMatchesToLoad(
     } else if (cancelledFetcherLoads.includes(key)) {
       // Always revalidate if the fetcher was cancelled
       shouldRevalidate = true;
-    } else if (
-      fetcher &&
-      fetcher.state !== "idle" &&
-      fetcher.data === undefined
-    ) {
+    } else if (fetcher && fetcher.state !== 'idle' && fetcher.data === undefined) {
       // If the fetcher hasn't ever completed loading yet, then this isn't a
       // revalidation, it would just be a brand new load if an explicit
       // revalidation is required
@@ -3983,9 +3481,7 @@ function getMatchesToLoad(
         ...submission,
         actionResult,
         unstable_actionStatus: actionStatus,
-        defaultShouldRevalidate: shouldSkipRevalidation
-          ? false
-          : isRevalidationRequired,
+        defaultShouldRevalidate: shouldSkipRevalidation ? false : isRevalidationRequired,
       });
     }
 
@@ -4004,11 +3500,7 @@ function getMatchesToLoad(
   return [navigationMatches, revalidatingFetchers];
 }
 
-function isNewLoader(
-  currentLoaderData: RouteData,
-  currentMatch: AgnosticDataRouteMatch,
-  match: AgnosticDataRouteMatch
-) {
+function isNewLoader(currentLoaderData: RouteData, currentMatch: AgnosticDataRouteMatch, match: AgnosticDataRouteMatch) {
   let isNew =
     // [a] -> [a, b]
     !currentMatch ||
@@ -4023,29 +3515,21 @@ function isNewLoader(
   return isNew || isMissingData;
 }
 
-function isNewRouteInstance(
-  currentMatch: AgnosticDataRouteMatch,
-  match: AgnosticDataRouteMatch
-) {
+function isNewRouteInstance(currentMatch: AgnosticDataRouteMatch, match: AgnosticDataRouteMatch) {
   let currentPath = currentMatch.route.path;
   return (
     // param change for this match, /users/123 -> /users/456
     currentMatch.pathname !== match.pathname ||
     // splat param changed, which is not present in match.path
     // e.g. /files/images/avatar.jpg -> files/finances.xls
-    (currentPath != null &&
-      currentPath.endsWith("*") &&
-      currentMatch.params["*"] !== match.params["*"])
+    (currentPath != null && currentPath.endsWith('*') && currentMatch.params['*'] !== match.params['*'])
   );
 }
 
-function shouldRevalidateLoader(
-  loaderMatch: AgnosticDataRouteMatch,
-  arg: ShouldRevalidateFunctionArgs
-) {
+function shouldRevalidateLoader(loaderMatch: AgnosticDataRouteMatch, arg: ShouldRevalidateFunctionArgs) {
   if (loaderMatch.route.shouldRevalidate) {
     let routeChoice = loaderMatch.route.shouldRevalidate(arg);
-    if (typeof routeChoice === "boolean") {
+    if (typeof routeChoice === 'boolean') {
       return routeChoice;
     }
   }
@@ -4058,11 +3542,7 @@ function shouldRevalidateLoader(
  * shouldRevalidate) and update the routeManifest in place which shares objects
  * with dataRoutes so those get updated as well.
  */
-async function loadLazyRouteModule(
-  route: AgnosticDataRouteObject,
-  mapRouteProperties: MapRoutePropertiesFunction,
-  manifest: RouteManifest
-) {
+async function loadLazyRouteModule(route: AgnosticDataRouteObject, mapRouteProperties: MapRoutePropertiesFunction, manifest: RouteManifest) {
   if (!route.lazy) {
     return;
   }
@@ -4077,7 +3557,7 @@ async function loadLazyRouteModule(
   }
 
   let routeToUpdate = manifest[route.id];
-  invariant(routeToUpdate, "No route found in manifest");
+  invariant(routeToUpdate, 'No route found in manifest');
 
   // Update the route in place.  This should be safe because there's no way
   // we could yet be sitting on this route as we can't get there without
@@ -4089,14 +3569,13 @@ async function loadLazyRouteModule(
   // values?".  If not, it should be safe to update in place.
   let routeUpdates: Record<string, any> = {};
   for (let lazyRouteProperty in lazyRoute) {
-    let staticRouteValue =
-      routeToUpdate[lazyRouteProperty as keyof typeof routeToUpdate];
+    let staticRouteValue = routeToUpdate[lazyRouteProperty as keyof typeof routeToUpdate];
 
     let isPropertyStaticallyDefined =
       staticRouteValue !== undefined &&
       // This property isn't static since it should always be updated based
       // on the route updates
-      lazyRouteProperty !== "hasErrorBoundary";
+      lazyRouteProperty !== 'hasErrorBoundary';
 
     warning(
       !isPropertyStaticallyDefined,
@@ -4105,12 +3584,8 @@ async function loadLazyRouteModule(
         `The lazy route property "${lazyRouteProperty}" will be ignored.`
     );
 
-    if (
-      !isPropertyStaticallyDefined &&
-      !immutableRouteKeys.has(lazyRouteProperty as ImmutableRouteKey)
-    ) {
-      routeUpdates[lazyRouteProperty] =
-        lazyRoute[lazyRouteProperty as keyof typeof lazyRoute];
+    if (!isPropertyStaticallyDefined && !immutableRouteKeys.has(lazyRouteProperty as ImmutableRouteKey)) {
+      routeUpdates[lazyRouteProperty] = lazyRoute[lazyRouteProperty as keyof typeof lazyRoute];
     }
   }
 
@@ -4132,15 +3607,13 @@ async function loadLazyRouteModule(
 }
 
 // Default implementation of `dataStrategy` which fetches all loaders in parallel
-function defaultDataStrategy(
-  opts: DataStrategyFunctionArgs
-): ReturnType<DataStrategyFunction> {
+function defaultDataStrategy(opts: DataStrategyFunctionArgs): ReturnType<DataStrategyFunction> {
   return Promise.all(opts.matches.map((m) => m.resolve()));
 }
 
 async function callDataStrategyImpl(
   dataStrategyImpl: DataStrategyFunction,
-  type: "loader" | "action",
+  type: 'loader' | 'action',
   request: Request,
   matchesToLoad: AgnosticDataRouteMatch[],
   matches: AgnosticDataRouteMatch[],
@@ -4148,10 +3621,7 @@ async function callDataStrategyImpl(
   mapRouteProperties: MapRoutePropertiesFunction,
   requestContext?: unknown
 ): Promise<HandlerResult[]> {
-  let routeIdsToLoad = matchesToLoad.reduce(
-    (acc, m) => acc.add(m.route.id),
-    new Set<string>()
-  );
+  let routeIdsToLoad = matchesToLoad.reduce((acc, m) => acc.add(m.route.id), new Set<string>());
   let loadedMatches = new Set<string>();
 
   // Send all matches here to allow for a middleware-type implementation.
@@ -4164,18 +3634,10 @@ async function callDataStrategyImpl(
       // loader/action, and mapping return values/thrown errors to a
       // HandlerResult.  Users can pass a callback to take fine-grained control
       // over the execution of the loader/action
-      let resolve: DataStrategyMatch["resolve"] = (handlerOverride) => {
+      let resolve: DataStrategyMatch['resolve'] = (handlerOverride) => {
         loadedMatches.add(match.route.id);
         return shouldLoad
-          ? callLoaderOrAction(
-              type,
-              request,
-              match,
-              manifest,
-              mapRouteProperties,
-              handlerOverride,
-              requestContext
-            )
+          ? callLoaderOrAction(type, request, match, manifest, mapRouteProperties, handlerOverride, requestContext)
           : Promise.resolve({ type: ResultType.data, result: undefined });
       };
 
@@ -4196,8 +3658,8 @@ async function callDataStrategyImpl(
     invariant(
       loadedMatches.has(m.route.id),
       `\`match.resolve()\` was not called for route id "${m.route.id}". ` +
-        "You must call `match.resolve()` on every match passed to " +
-        "`dataStrategy` to ensure all routes are properly loaded."
+        'You must call `match.resolve()` on every match passed to ' +
+        '`dataStrategy` to ensure all routes are properly loaded.'
     )
   );
 
@@ -4207,36 +3669,29 @@ async function callDataStrategyImpl(
 
 // Default logic for calling a loader/action is the user has no specified a dataStrategy
 async function callLoaderOrAction(
-  type: "loader" | "action",
+  type: 'loader' | 'action',
   request: Request,
   match: AgnosticDataRouteMatch,
   manifest: RouteManifest,
   mapRouteProperties: MapRoutePropertiesFunction,
-  handlerOverride: Parameters<DataStrategyMatch["resolve"]>[0],
+  handlerOverride: Parameters<DataStrategyMatch['resolve']>[0],
   staticContext?: unknown
 ): Promise<HandlerResult> {
   let result: HandlerResult;
   let onReject: (() => void) | undefined;
 
-  let runHandler = (
-    handler: AgnosticRouteObject["loader"] | AgnosticRouteObject["action"]
-  ): Promise<HandlerResult> => {
+  let runHandler = (handler: AgnosticRouteObject['loader'] | AgnosticRouteObject['action']): Promise<HandlerResult> => {
     // Setup a promise we can race against so that abort signals short circuit
     let reject: () => void;
     // This will never resolve so safe to type it as Promise<HandlerResult> to
     // satisfy the function return value
     let abortPromise = new Promise<HandlerResult>((_, r) => (reject = r));
     onReject = () => reject();
-    request.signal.addEventListener("abort", onReject);
+    request.signal.addEventListener('abort', onReject);
 
     let actualHandler = (ctx?: unknown) => {
-      if (typeof handler !== "function") {
-        return Promise.reject(
-          new Error(
-            `You cannot call the handler for a route which defines a boolean ` +
-              `"${type}" [routeId: ${match.route.id}]`
-          )
-        );
+      if (typeof handler !== 'function') {
+        return Promise.reject(new Error(`You cannot call the handler for a route which defines a boolean ` + `"${type}" [routeId: ${match.route.id}]`));
       }
       return handler(
         {
@@ -4255,9 +3710,9 @@ async function callLoaderOrAction(
       handlerPromise = (async () => {
         try {
           let val = await actualHandler();
-          return { type: "data", result: val };
+          return { type: 'data', result: val };
         } catch (e) {
-          return { type: "error", result: e };
+          return { type: 'error', result: e };
         }
       })();
     }
@@ -4295,7 +3750,7 @@ async function callLoaderOrAction(
           // with un-abortable behavior of handler execution on non-lazy or
           // previously-lazy-loaded routes
           result = await runHandler(handler);
-        } else if (type === "action") {
+        } else if (type === 'action') {
           let url = new URL(request.url);
           let pathname = url.pathname + url.search;
           throw getInternalRouterError(405, {
@@ -4321,7 +3776,7 @@ async function callLoaderOrAction(
 
     invariant(
       result.result !== undefined,
-      `You defined ${type === "action" ? "an action" : "a loader"} for route ` +
+      `You defined ${type === 'action' ? 'an action' : 'a loader'} for route ` +
         `"${match.route.id}" but didn't return anything from your \`${type}\` ` +
         `function. Please return a value or \`null\`.`
     );
@@ -4332,23 +3787,21 @@ async function callLoaderOrAction(
     return { type: ResultType.error, result: e };
   } finally {
     if (onReject) {
-      request.signal.removeEventListener("abort", onReject);
+      request.signal.removeEventListener('abort', onReject);
     }
   }
 
   return result;
 }
 
-async function convertHandlerResultToDataResult(
-  handlerResult: HandlerResult
-): Promise<DataResult> {
+async function convertHandlerResultToDataResult(handlerResult: HandlerResult): Promise<DataResult> {
   let { result, type, status } = handlerResult;
 
   if (isResponse(result)) {
     let data: any;
 
     try {
-      let contentType = result.headers.get("Content-Type");
+      let contentType = result.headers.get('Content-Type');
       // Check between word boundaries instead of startsWith() due to the last
       // paragraph of https://httpwg.org/specs/rfc9110.html#field.content-type
       if (contentType && /\bapplication\/json\b/.test(contentType)) {
@@ -4410,42 +3863,23 @@ function normalizeRelativeRoutingRedirectResponse(
   basename: string,
   v7_relativeSplatPath: boolean
 ) {
-  let location = response.headers.get("Location");
-  invariant(
-    location,
-    "Redirects returned/thrown from loaders/actions must have a Location header"
-  );
+  let location = response.headers.get('Location');
+  invariant(location, 'Redirects returned/thrown from loaders/actions must have a Location header');
 
   if (!ABSOLUTE_URL_REGEX.test(location)) {
-    let trimmedMatches = matches.slice(
-      0,
-      matches.findIndex((m) => m.route.id === routeId) + 1
-    );
-    location = normalizeTo(
-      new URL(request.url),
-      trimmedMatches,
-      basename,
-      true,
-      location,
-      v7_relativeSplatPath
-    );
-    response.headers.set("Location", location);
+    let trimmedMatches = matches.slice(0, matches.findIndex((m) => m.route.id === routeId) + 1);
+    location = normalizeTo(new URL(request.url), trimmedMatches, basename, true, location, v7_relativeSplatPath);
+    response.headers.set('Location', location);
   }
 
   return response;
 }
 
-function normalizeRedirectLocation(
-  location: string,
-  currentUrl: URL,
-  basename: string
-): string {
+function normalizeRedirectLocation(location: string, currentUrl: URL, basename: string): string {
   if (ABSOLUTE_URL_REGEX.test(location)) {
     // Strip off the protocol+origin for same-origin + same-basename absolute redirects
     let normalizedLocation = location;
-    let url = normalizedLocation.startsWith("//")
-      ? new URL(currentUrl.protocol + normalizedLocation)
-      : new URL(normalizedLocation);
+    let url = normalizedLocation.startsWith('//') ? new URL(currentUrl.protocol + normalizedLocation) : new URL(normalizedLocation);
     let isSameBasename = stripBasename(url.pathname, basename) != null;
     if (url.origin === currentUrl.origin && isSameBasename) {
       return url.pathname + url.search + url.hash;
@@ -4457,12 +3891,7 @@ function normalizeRedirectLocation(
 // Utility method for creating the Request instances for loaders/actions during
 // client-side navigations and fetches.  During SSR we will always have a
 // Request instance from the static handler (query/queryRoute)
-function createClientSideRequest(
-  history: History,
-  location: string | Location,
-  signal: AbortSignal,
-  submission?: Submission
-): Request {
+function createClientSideRequest(history: History, location: string | Location, signal: AbortSignal, submission?: Submission): Request {
   let url = history.createURL(stripHashFromPath(location)).toString();
   let init: RequestInit = { signal };
 
@@ -4473,16 +3902,13 @@ function createClientSideRequest(
     // See: https://fetch.spec.whatwg.org/#concept-method
     init.method = formMethod.toUpperCase();
 
-    if (formEncType === "application/json") {
-      init.headers = new Headers({ "Content-Type": formEncType });
+    if (formEncType === 'application/json') {
+      init.headers = new Headers({ 'Content-Type': formEncType });
       init.body = JSON.stringify(submission.json);
-    } else if (formEncType === "text/plain") {
+    } else if (formEncType === 'text/plain') {
       // Content-Type is inferred (https://fetch.spec.whatwg.org/#dom-request)
       init.body = submission.text;
-    } else if (
-      formEncType === "application/x-www-form-urlencoded" &&
-      submission.formData
-    ) {
+    } else if (formEncType === 'application/x-www-form-urlencoded' && submission.formData) {
       // Content-Type is inferred (https://fetch.spec.whatwg.org/#dom-request)
       init.body = convertFormDataToSearchParams(submission.formData);
     } else {
@@ -4499,15 +3925,13 @@ function convertFormDataToSearchParams(formData: FormData): URLSearchParams {
 
   for (let [key, value] of formData.entries()) {
     // https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#converting-an-entry-list-to-a-list-of-name-value-pairs
-    searchParams.append(key, typeof value === "string" ? value : value.name);
+    searchParams.append(key, typeof value === 'string' ? value : value.name);
   }
 
   return searchParams;
 }
 
-function convertSearchParamsToFormData(
-  searchParams: URLSearchParams
-): FormData {
+function convertSearchParamsToFormData(searchParams: URLSearchParams): FormData {
   let formData = new FormData();
   for (let [key, value] of searchParams.entries()) {
     formData.append(key, value);
@@ -4523,29 +3947,23 @@ function processRouteLoaderData(
   activeDeferreds: Map<string, DeferredData>,
   skipLoaderErrorBubbling: boolean
 ): {
-  loaderData: RouterState["loaderData"];
-  errors: RouterState["errors"] | null;
+  loaderData: RouterState['loaderData'];
+  errors: RouterState['errors'] | null;
   statusCode: number;
   loaderHeaders: Record<string, Headers>;
 } {
   // Fill in loaderData/errors from our loaders
-  let loaderData: RouterState["loaderData"] = {};
-  let errors: RouterState["errors"] | null = null;
+  let loaderData: RouterState['loaderData'] = {};
+  let errors: RouterState['errors'] | null = null;
   let statusCode: number | undefined;
   let foundError = false;
   let loaderHeaders: Record<string, Headers> = {};
-  let pendingError =
-    pendingActionResult && isErrorResult(pendingActionResult[1])
-      ? pendingActionResult[1].error
-      : undefined;
+  let pendingError = pendingActionResult && isErrorResult(pendingActionResult[1]) ? pendingActionResult[1].error : undefined;
 
   // Process loader results into state.loaderData/state.errors
   results.forEach((result, index) => {
     let id = matchesToLoad[index].route.id;
-    invariant(
-      !isRedirectResult(result),
-      "Cannot handle redirect results in processLoaderData"
-    );
+    invariant(!isRedirectResult(result), 'Cannot handle redirect results in processLoaderData');
     if (isErrorResult(result)) {
       let error = result.error;
       // If we have a pending action error, we report it at the highest-route
@@ -4577,9 +3995,7 @@ function processRouteLoaderData(
       // prevent deeper status codes from overriding
       if (!foundError) {
         foundError = true;
-        statusCode = isRouteErrorResponse(result.error)
-          ? result.error.status
-          : 500;
+        statusCode = isRouteErrorResponse(result.error) ? result.error.status : 500;
       }
       if (result.headers) {
         loaderHeaders[id] = result.headers;
@@ -4590,11 +4006,7 @@ function processRouteLoaderData(
         loaderData[id] = result.deferredData.data;
         // Error status codes always override success status codes, but if all
         // loaders are successful we take the deepest status code.
-        if (
-          result.statusCode != null &&
-          result.statusCode !== 200 &&
-          !foundError
-        ) {
+        if (result.statusCode != null && result.statusCode !== 200 && !foundError) {
           statusCode = result.statusCode;
         }
         if (result.headers) {
@@ -4640,8 +4052,8 @@ function processLoaderData(
   fetcherResults: DataResult[],
   activeDeferreds: Map<string, DeferredData>
 ): {
-  loaderData: RouterState["loaderData"];
-  errors?: RouterState["errors"];
+  loaderData: RouterState['loaderData'];
+  errors?: RouterState['errors'];
 } {
   let { loaderData, errors } = processRouteLoaderData(
     matches,
@@ -4655,10 +4067,7 @@ function processLoaderData(
   // Process results from our revalidating fetchers
   for (let index = 0; index < revalidatingFetchers.length; index++) {
     let { key, match, controller } = revalidatingFetchers[index];
-    invariant(
-      fetcherResults !== undefined && fetcherResults[index] !== undefined,
-      "Did not find corresponding fetcher result"
-    );
+    invariant(fetcherResults !== undefined && fetcherResults[index] !== undefined, 'Did not find corresponding fetcher result');
     let result = fetcherResults[index];
 
     // Process fetcher non-redirect errors
@@ -4677,11 +4086,11 @@ function processLoaderData(
     } else if (isRedirectResult(result)) {
       // Should never get here, redirects should get processed above, but we
       // keep this to type narrow to a success result in the else
-      invariant(false, "Unhandled fetcher revalidation redirect");
+      invariant(false, 'Unhandled fetcher revalidation redirect');
     } else if (isDeferredResult(result)) {
       // Should never get here, deferred data should be awaited for fetchers
       // in resolveDeferredResults
-      invariant(false, "Unhandled fetcher deferred data");
+      invariant(false, 'Unhandled fetcher deferred data');
     } else {
       let doneFetcher = getDoneFetcher(result.data);
       state.fetchers.set(key, doneFetcher);
@@ -4691,12 +4100,7 @@ function processLoaderData(
   return { loaderData, errors };
 }
 
-function mergeLoaderData(
-  loaderData: RouteData,
-  newLoaderData: RouteData,
-  matches: AgnosticDataRouteMatch[],
-  errors: RouteData | null | undefined
-): RouteData {
+function mergeLoaderData(loaderData: RouteData, newLoaderData: RouteData, matches: AgnosticDataRouteMatch[], errors: RouteData | null | undefined): RouteData {
   let mergedLoaderData = { ...newLoaderData };
   for (let match of matches) {
     let id = match.route.id;
@@ -4722,9 +4126,7 @@ function mergeLoaderData(
   return mergedLoaderData;
 }
 
-function getActionDataForCommit(
-  pendingActionResult: PendingActionResult | undefined
-) {
+function getActionDataForCommit(pendingActionResult: PendingActionResult | undefined) {
   if (!pendingActionResult) {
     return {};
   }
@@ -4743,17 +4145,9 @@ function getActionDataForCommit(
 // Find the nearest error boundary, looking upwards from the leaf route (or the
 // route specified by routeId) for the closest ancestor error boundary,
 // defaulting to the root match
-function findNearestBoundary(
-  matches: AgnosticDataRouteMatch[],
-  routeId?: string
-): AgnosticDataRouteMatch {
-  let eligibleMatches = routeId
-    ? matches.slice(0, matches.findIndex((m) => m.route.id === routeId) + 1)
-    : [...matches];
-  return (
-    eligibleMatches.reverse().find((m) => m.route.hasErrorBoundary === true) ||
-    matches[0]
-  );
+function findNearestBoundary(matches: AgnosticDataRouteMatch[], routeId?: string): AgnosticDataRouteMatch {
+  let eligibleMatches = routeId ? matches.slice(0, matches.findIndex((m) => m.route.id === routeId) + 1) : [...matches];
+  return eligibleMatches.reverse().find((m) => m.route.hasErrorBoundary === true) || matches[0];
 }
 
 function getShortCircuitMatches(routes: AgnosticDataRouteObject[]): {
@@ -4764,7 +4158,7 @@ function getShortCircuitMatches(routes: AgnosticDataRouteObject[]): {
   let route =
     routes.length === 1
       ? routes[0]
-      : routes.find((r) => r.index || !r.path || r.path === "/") || {
+      : routes.find((r) => r.index || !r.path || r.path === '/') || {
           id: `__shim-error-route__`,
         };
 
@@ -4772,8 +4166,8 @@ function getShortCircuitMatches(routes: AgnosticDataRouteObject[]): {
     matches: [
       {
         params: {},
-        pathname: "",
-        pathnameBase: "",
+        pathname: '',
+        pathnameBase: '',
         route,
       },
     ],
@@ -4792,32 +4186,32 @@ function getInternalRouterError(
     pathname?: string;
     routeId?: string;
     method?: string;
-    type?: "defer-action" | "invalid-body";
+    type?: 'defer-action' | 'invalid-body';
   } = {}
 ) {
-  let statusText = "Unknown Server Error";
-  let errorMessage = "Unknown @remix-run/router error";
+  let statusText = 'Unknown Server Error';
+  let errorMessage = 'Unknown @remix-run/router error';
 
   if (status === 400) {
-    statusText = "Bad Request";
+    statusText = 'Bad Request';
     if (method && pathname && routeId) {
       errorMessage =
         `You made a ${method} request to "${pathname}" but ` +
         `did not provide a \`loader\` for route "${routeId}", ` +
         `so there is no way to handle the request.`;
-    } else if (type === "defer-action") {
-      errorMessage = "defer() is not supported in actions";
-    } else if (type === "invalid-body") {
-      errorMessage = "Unable to encode submission body";
+    } else if (type === 'defer-action') {
+      errorMessage = 'defer() is not supported in actions';
+    } else if (type === 'invalid-body') {
+      errorMessage = 'Unable to encode submission body';
     }
   } else if (status === 403) {
-    statusText = "Forbidden";
+    statusText = 'Forbidden';
     errorMessage = `Route "${routeId}" does not match URL "${pathname}"`;
   } else if (status === 404) {
-    statusText = "Not Found";
+    statusText = 'Not Found';
     errorMessage = `No route matches URL "${pathname}"`;
   } else if (status === 405) {
-    statusText = "Method Not Allowed";
+    statusText = 'Method Not Allowed';
     if (method && pathname && routeId) {
       errorMessage =
         `You made a ${method.toUpperCase()} request to "${pathname}" but ` +
@@ -4828,18 +4222,11 @@ function getInternalRouterError(
     }
   }
 
-  return new ErrorResponseImpl(
-    status || 500,
-    statusText,
-    new Error(errorMessage),
-    true
-  );
+  return new ErrorResponseImpl(status || 500, statusText, new Error(errorMessage), true);
 }
 
 // Find any returned redirect errors, starting from the lowest match
-function findRedirect(
-  results: DataResult[]
-): { result: RedirectResult; idx: number } | undefined {
+function findRedirect(results: DataResult[]): { result: RedirectResult; idx: number } | undefined {
   for (let i = results.length - 1; i >= 0; i--) {
     let result = results[i];
     if (isRedirectResult(result)) {
@@ -4849,8 +4236,8 @@ function findRedirect(
 }
 
 function stripHashFromPath(path: To) {
-  let parsedPath = typeof path === "string" ? parsePath(path) : path;
-  return createPath({ ...parsedPath, hash: "" });
+  let parsedPath = typeof path === 'string' ? parsePath(path) : path;
+  return createPath({ ...parsedPath, hash: '' });
 }
 
 function isHashChangeOnly(a: Location, b: Location): boolean {
@@ -4858,13 +4245,13 @@ function isHashChangeOnly(a: Location, b: Location): boolean {
     return false;
   }
 
-  if (a.hash === "") {
+  if (a.hash === '') {
     // /page -> /page#hash
-    return b.hash !== "";
+    return b.hash !== '';
   } else if (a.hash === b.hash) {
     // /page#hash -> /page#hash
     return true;
-  } else if (b.hash !== "") {
+  } else if (b.hash !== '') {
     // /page#hash -> /page#other
     return true;
   }
@@ -4877,17 +4264,15 @@ function isHashChangeOnly(a: Location, b: Location): boolean {
 function isHandlerResult(result: unknown): result is HandlerResult {
   return (
     result != null &&
-    typeof result === "object" &&
-    "type" in result &&
-    "result" in result &&
+    typeof result === 'object' &&
+    'type' in result &&
+    'result' in result &&
     (result.type === ResultType.data || result.type === ResultType.error)
   );
 }
 
 function isRedirectHandlerResult(result: HandlerResult) {
-  return (
-    isResponse(result.result) && redirectStatusCodes.has(result.result.status)
-  );
+  return isResponse(result.result) && redirectStatusCodes.has(result.result.status);
 }
 
 function isDeferredResult(result: DataResult): result is DeferredResult {
@@ -4906,21 +4291,21 @@ export function isDeferredData(value: any): value is DeferredData {
   let deferred: DeferredData = value;
   return (
     deferred &&
-    typeof deferred === "object" &&
-    typeof deferred.data === "object" &&
-    typeof deferred.subscribe === "function" &&
-    typeof deferred.cancel === "function" &&
-    typeof deferred.resolveData === "function"
+    typeof deferred === 'object' &&
+    typeof deferred.data === 'object' &&
+    typeof deferred.subscribe === 'function' &&
+    typeof deferred.cancel === 'function' &&
+    typeof deferred.resolveData === 'function'
   );
 }
 
 function isResponse(value: any): value is Response {
   return (
     value != null &&
-    typeof value.status === "number" &&
-    typeof value.statusText === "string" &&
-    typeof value.headers === "object" &&
-    typeof value.body !== "undefined"
+    typeof value.status === 'number' &&
+    typeof value.statusText === 'string' &&
+    typeof value.headers === 'object' &&
+    typeof value.body !== 'undefined'
   );
 }
 
@@ -4930,7 +4315,7 @@ function isRedirectResponse(result: any): result is Response {
   }
 
   let status = result.status;
-  let location = result.headers.get("Location");
+  let location = result.headers.get('Location');
   return status >= 300 && status <= 399 && location != null;
 }
 
@@ -4938,9 +4323,7 @@ function isValidMethod(method: string): method is FormMethod | V7_FormMethod {
   return validRequestMethods.has(method.toLowerCase() as FormMethod);
 }
 
-function isMutationMethod(
-  method: string
-): method is MutationFormMethod | V7_MutationFormMethod {
+function isMutationMethod(method: string): method is MutationFormMethod | V7_MutationFormMethod {
   return validMutationMethods.has(method.toLowerCase() as MutationFormMethod);
 }
 
@@ -4962,23 +4345,16 @@ async function resolveDeferredResults(
       continue;
     }
 
-    let currentMatch = currentMatches.find(
-      (m) => m.route.id === match!.route.id
-    );
+    let currentMatch = currentMatches.find((m) => m.route.id === match!.route.id);
     let isRevalidatingLoader =
-      currentMatch != null &&
-      !isNewRouteInstance(currentMatch, match) &&
-      (currentLoaderData && currentLoaderData[match.route.id]) !== undefined;
+      currentMatch != null && !isNewRouteInstance(currentMatch, match) && (currentLoaderData && currentLoaderData[match.route.id]) !== undefined;
 
     if (isDeferredResult(result) && (isFetcher || isRevalidatingLoader)) {
       // Note: we do not have to touch activeDeferreds here since we race them
       // against the signal in resolveDeferredData and they'll get aborted
       // there if needed
       let signal = signals[index];
-      invariant(
-        signal,
-        "Expected an AbortSignal for revalidating fetcher deferred result"
-      );
+      invariant(signal, 'Expected an AbortSignal for revalidating fetcher deferred result');
       await resolveDeferredData(result, signal, isFetcher).then((result) => {
         if (result) {
           results[index] = result || results[index];
@@ -4988,11 +4364,7 @@ async function resolveDeferredResults(
   }
 }
 
-async function resolveDeferredData(
-  result: DeferredResult,
-  signal: AbortSignal,
-  unwrap = false
-): Promise<SuccessResult | ErrorResult | undefined> {
+async function resolveDeferredData(result: DeferredResult, signal: AbortSignal, unwrap = false): Promise<SuccessResult | ErrorResult | undefined> {
   let aborted = await result.deferredData.resolveData(signal);
   if (aborted) {
     return;
@@ -5020,19 +4392,12 @@ async function resolveDeferredData(
 }
 
 function hasNakedIndexQuery(search: string): boolean {
-  return new URLSearchParams(search).getAll("index").some((v) => v === "");
+  return new URLSearchParams(search).getAll('index').some((v) => v === '');
 }
 
-function getTargetMatch(
-  matches: AgnosticDataRouteMatch[],
-  location: Location | string
-) {
-  let search =
-    typeof location === "string" ? parsePath(location).search : location.search;
-  if (
-    matches[matches.length - 1].route.index &&
-    hasNakedIndexQuery(search || "")
-  ) {
+function getTargetMatch(matches: AgnosticDataRouteMatch[], location: Location | string) {
+  let search = typeof location === 'string' ? parsePath(location).search : location.search;
+  if (matches[matches.length - 1].route.index && hasNakedIndexQuery(search || '')) {
     // Return the leaf index route when index is present
     return matches[matches.length - 1];
   }
@@ -5042,11 +4407,8 @@ function getTargetMatch(
   return pathMatches[pathMatches.length - 1];
 }
 
-function getSubmissionFromNavigation(
-  navigation: Navigation
-): Submission | undefined {
-  let { formMethod, formAction, formEncType, text, formData, json } =
-    navigation;
+function getSubmissionFromNavigation(navigation: Navigation): Submission | undefined {
+  let { formMethod, formAction, formEncType, text, formData, json } = navigation;
   if (!formMethod || !formAction || !formEncType) {
     return;
   }
@@ -5081,13 +4443,10 @@ function getSubmissionFromNavigation(
   }
 }
 
-function getLoadingNavigation(
-  location: Location,
-  submission?: Submission
-): NavigationStates["Loading"] {
+function getLoadingNavigation(location: Location, submission?: Submission): NavigationStates['Loading'] {
   if (submission) {
-    let navigation: NavigationStates["Loading"] = {
-      state: "loading",
+    let navigation: NavigationStates['Loading'] = {
+      state: 'loading',
       location,
       formMethod: submission.formMethod,
       formAction: submission.formAction,
@@ -5098,8 +4457,8 @@ function getLoadingNavigation(
     };
     return navigation;
   } else {
-    let navigation: NavigationStates["Loading"] = {
-      state: "loading",
+    let navigation: NavigationStates['Loading'] = {
+      state: 'loading',
       location,
       formMethod: undefined,
       formAction: undefined,
@@ -5112,12 +4471,9 @@ function getLoadingNavigation(
   }
 }
 
-function getSubmittingNavigation(
-  location: Location,
-  submission: Submission
-): NavigationStates["Submitting"] {
-  let navigation: NavigationStates["Submitting"] = {
-    state: "submitting",
+function getSubmittingNavigation(location: Location, submission: Submission): NavigationStates['Submitting'] {
+  let navigation: NavigationStates['Submitting'] = {
+    state: 'submitting',
     location,
     formMethod: submission.formMethod,
     formAction: submission.formAction,
@@ -5129,13 +4485,10 @@ function getSubmittingNavigation(
   return navigation;
 }
 
-function getLoadingFetcher(
-  submission?: Submission,
-  data?: Fetcher["data"]
-): FetcherStates["Loading"] {
+function getLoadingFetcher(submission?: Submission, data?: Fetcher['data']): FetcherStates['Loading'] {
   if (submission) {
-    let fetcher: FetcherStates["Loading"] = {
-      state: "loading",
+    let fetcher: FetcherStates['Loading'] = {
+      state: 'loading',
       formMethod: submission.formMethod,
       formAction: submission.formAction,
       formEncType: submission.formEncType,
@@ -5146,8 +4499,8 @@ function getLoadingFetcher(
     };
     return fetcher;
   } else {
-    let fetcher: FetcherStates["Loading"] = {
-      state: "loading",
+    let fetcher: FetcherStates['Loading'] = {
+      state: 'loading',
       formMethod: undefined,
       formAction: undefined,
       formEncType: undefined,
@@ -5160,12 +4513,9 @@ function getLoadingFetcher(
   }
 }
 
-function getSubmittingFetcher(
-  submission: Submission,
-  existingFetcher?: Fetcher
-): FetcherStates["Submitting"] {
-  let fetcher: FetcherStates["Submitting"] = {
-    state: "submitting",
+function getSubmittingFetcher(submission: Submission, existingFetcher?: Fetcher): FetcherStates['Submitting'] {
+  let fetcher: FetcherStates['Submitting'] = {
+    state: 'submitting',
     formMethod: submission.formMethod,
     formAction: submission.formAction,
     formEncType: submission.formEncType,
@@ -5177,9 +4527,9 @@ function getSubmittingFetcher(
   return fetcher;
 }
 
-function getDoneFetcher(data: Fetcher["data"]): FetcherStates["Idle"] {
-  let fetcher: FetcherStates["Idle"] = {
-    state: "idle",
+function getDoneFetcher(data: Fetcher['data']): FetcherStates['Idle'] {
+  let fetcher: FetcherStates['Idle'] = {
+    state: 'idle',
     formMethod: undefined,
     formAction: undefined,
     formEncType: undefined,
@@ -5191,14 +4541,9 @@ function getDoneFetcher(data: Fetcher["data"]): FetcherStates["Idle"] {
   return fetcher;
 }
 
-function restoreAppliedTransitions(
-  _window: Window,
-  transitions: Map<string, Set<string>>
-) {
+function restoreAppliedTransitions(_window: Window, transitions: Map<string, Set<string>>) {
   try {
-    let sessionPositions = _window.sessionStorage.getItem(
-      TRANSITIONS_STORAGE_KEY
-    );
+    let sessionPositions = _window.sessionStorage.getItem(TRANSITIONS_STORAGE_KEY);
     if (sessionPositions) {
       let json = JSON.parse(sessionPositions);
       for (let [k, v] of Object.entries(json || {})) {
@@ -5212,25 +4557,16 @@ function restoreAppliedTransitions(
   }
 }
 
-function persistAppliedTransitions(
-  _window: Window,
-  transitions: Map<string, Set<string>>
-) {
+function persistAppliedTransitions(_window: Window, transitions: Map<string, Set<string>>) {
   if (transitions.size > 0) {
     let json: Record<string, string[]> = {};
     for (let [k, v] of transitions) {
       json[k] = [...v];
     }
     try {
-      _window.sessionStorage.setItem(
-        TRANSITIONS_STORAGE_KEY,
-        JSON.stringify(json)
-      );
+      _window.sessionStorage.setItem(TRANSITIONS_STORAGE_KEY, JSON.stringify(json));
     } catch (error) {
-      warning(
-        false,
-        `Failed to save applied view transitions in sessionStorage (${error}).`
-      );
+      warning(false, `Failed to save applied view transitions in sessionStorage (${error}).`);
     }
   }
 }

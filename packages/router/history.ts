@@ -13,20 +13,20 @@ export enum Action {
    *
    * Note: This is the default action for newly created history objects.
    */
-  Pop = "POP",
+  Pop = 'POP',
 
   /**
    * A PUSH indicates a new entry being added to the history stack, such as when
    * a link is clicked and a new page loads. When this happens, all subsequent
    * entries in the stack are lost.
    */
-  Push = "PUSH",
+  Push = 'PUSH',
 
   /**
    * A REPLACE indicates the entry at the current index in the history stack
    * being replaced by a new one.
    */
-  Replace = "REPLACE",
+  Replace = 'REPLACE',
 }
 
 /**
@@ -192,7 +192,7 @@ type HistoryState = {
   idx: number;
 };
 
-const PopStateEventType = "popstate";
+const PopStateEventType = 'popstate';
 //#endregion
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -227,21 +227,13 @@ export interface MemoryHistory extends History {
  * Memory history stores the current location in memory. It is designed for use
  * in stateful non-browser environments like tests and React Native.
  */
-export function createMemoryHistory(
-  options: MemoryHistoryOptions = {}
-): MemoryHistory {
-  let { initialEntries = ["/"], initialIndex, v5Compat = false } = options;
+export function createMemoryHistory(options: MemoryHistoryOptions = {}): MemoryHistory {
+  let { initialEntries = ['/'], initialIndex, v5Compat = false } = options;
   let entries: Location[]; // Declare so we can access from createMemoryLocation
   entries = initialEntries.map((entry, index) =>
-    createMemoryLocation(
-      entry,
-      typeof entry === "string" ? null : entry.state,
-      index === 0 ? "default" : undefined
-    )
+    createMemoryLocation(entry, typeof entry === 'string' ? null : entry.state, index === 0 ? 'default' : undefined)
   );
-  let index = clampIndex(
-    initialIndex == null ? entries.length - 1 : initialIndex
-  );
+  let index = clampIndex(initialIndex == null ? entries.length - 1 : initialIndex);
   let action = Action.Pop;
   let listener: Listener | null = null;
 
@@ -251,28 +243,14 @@ export function createMemoryHistory(
   function getCurrentLocation(): Location {
     return entries[index];
   }
-  function createMemoryLocation(
-    to: To,
-    state: any = null,
-    key?: string
-  ): Location {
-    let location = createLocation(
-      entries ? getCurrentLocation().pathname : "/",
-      to,
-      state,
-      key
-    );
-    warning(
-      location.pathname.charAt(0) === "/",
-      `relative pathnames are not supported in memory history: ${JSON.stringify(
-        to
-      )}`
-    );
+  function createMemoryLocation(to: To, state: any = null, key?: string): Location {
+    let location = createLocation(entries ? getCurrentLocation().pathname : '/', to, state, key);
+    warning(location.pathname.charAt(0) === '/', `relative pathnames are not supported in memory history: ${JSON.stringify(to)}`);
     return location;
   }
 
   function createHref(to: To) {
-    return typeof to === "string" ? to : createPath(to);
+    return typeof to === 'string' ? to : createPath(to);
   }
 
   let history: MemoryHistory = {
@@ -287,14 +265,14 @@ export function createMemoryHistory(
     },
     createHref,
     createURL(to) {
-      return new URL(createHref(to), "http://localhost");
+      return new URL(createHref(to), 'http://localhost');
     },
     encodeLocation(to: To) {
-      let path = typeof to === "string" ? parsePath(to) : to;
+      let path = typeof to === 'string' ? parsePath(to) : to;
       return {
-        pathname: path.pathname || "",
-        search: path.search || "",
-        hash: path.hash || "",
+        pathname: path.pathname || '',
+        search: path.search || '',
+        hash: path.hash || '',
       };
     },
     push(to, state) {
@@ -357,33 +335,23 @@ export type BrowserHistoryOptions = UrlHistoryOptions;
  *
  * @see https://github.com/remix-run/history/tree/main/docs/api-reference.md#createbrowserhistory
  */
-export function createBrowserHistory(
-  options: BrowserHistoryOptions = {}
-): BrowserHistory {
-  function createBrowserLocation(
-    window: Window,
-    globalHistory: Window["history"]
-  ) {
+export function createBrowserHistory(options: BrowserHistoryOptions = {}): BrowserHistory {
+  function createBrowserLocation(window: Window, globalHistory: Window['history']) {
     let { pathname, search, hash } = window.location;
     return createLocation(
-      "",
+      '',
       { pathname, search, hash },
       // state defaults to `null` because `window.history.state` does
       (globalHistory.state && globalHistory.state.usr) || null,
-      (globalHistory.state && globalHistory.state.key) || "default"
+      (globalHistory.state && globalHistory.state.key) || 'default'
     );
   }
 
   function createBrowserHref(window: Window, to: To) {
-    return typeof to === "string" ? to : createPath(to);
+    return typeof to === 'string' ? to : createPath(to);
   }
 
-  return getUrlBasedHistory(
-    createBrowserLocation,
-    createBrowserHref,
-    null,
-    options
-  );
+  return getUrlBasedHistory(createBrowserLocation, createBrowserHref, null, options);
 }
 //#endregion
 
@@ -414,18 +382,9 @@ export type HashHistoryOptions = UrlHistoryOptions;
  *
  * @see https://github.com/remix-run/history/tree/main/docs/api-reference.md#createhashhistory
  */
-export function createHashHistory(
-  options: HashHistoryOptions = {}
-): HashHistory {
-  function createHashLocation(
-    window: Window,
-    globalHistory: Window["history"]
-  ) {
-    let {
-      pathname = "/",
-      search = "",
-      hash = "",
-    } = parsePath(window.location.hash.substr(1));
+export function createHashHistory(options: HashHistoryOptions = {}): HashHistory {
+  function createHashLocation(window: Window, globalHistory: Window['history']) {
+    let { pathname = '/', search = '', hash = '' } = parsePath(window.location.hash.substr(1));
 
     // Hash URL should always have a leading / just like window.location.pathname
     // does, so if an app ends up at a route like /#something then we add a
@@ -433,47 +392,37 @@ export function createHashHistory(
     // in a browser router.  This is particularly important when there exists a
     // root splat route (<Route path="*">) since that matches internally against
     // "/*" and we'd expect /#something to 404 in a hash router app.
-    if (!pathname.startsWith("/") && !pathname.startsWith(".")) {
-      pathname = "/" + pathname;
+    if (!pathname.startsWith('/') && !pathname.startsWith('.')) {
+      pathname = '/' + pathname;
     }
 
     return createLocation(
-      "",
+      '',
       { pathname, search, hash },
       // state defaults to `null` because `window.history.state` does
       (globalHistory.state && globalHistory.state.usr) || null,
-      (globalHistory.state && globalHistory.state.key) || "default"
+      (globalHistory.state && globalHistory.state.key) || 'default'
     );
   }
 
   function createHashHref(window: Window, to: To) {
-    let base = window.document.querySelector("base");
-    let href = "";
+    let base = window.document.querySelector('base');
+    let href = '';
 
-    if (base && base.getAttribute("href")) {
+    if (base && base.getAttribute('href')) {
       let url = window.location.href;
-      let hashIndex = url.indexOf("#");
+      let hashIndex = url.indexOf('#');
       href = hashIndex === -1 ? url : url.slice(0, hashIndex);
     }
 
-    return href + "#" + (typeof to === "string" ? to : createPath(to));
+    return href + '#' + (typeof to === 'string' ? to : createPath(to));
   }
 
   function validateHashLocation(location: Location, to: To) {
-    warning(
-      location.pathname.charAt(0) === "/",
-      `relative pathnames are not supported in hash history.push(${JSON.stringify(
-        to
-      )})`
-    );
+    warning(location.pathname.charAt(0) === '/', `relative pathnames are not supported in hash history.push(${JSON.stringify(to)})`);
   }
 
-  return getUrlBasedHistory(
-    createHashLocation,
-    createHashHref,
-    validateHashLocation,
-    options
-  );
+  return getUrlBasedHistory(createHashLocation, createHashHref, validateHashLocation, options);
 }
 //#endregion
 
@@ -485,12 +434,9 @@ export function createHashHistory(
  * @private
  */
 export function invariant(value: boolean, message?: string): asserts value;
-export function invariant<T>(
-  value: T | null | undefined,
-  message?: string
-): asserts value is T;
+export function invariant<T>(value: T | null | undefined, message?: string): asserts value is T;
 export function invariant(value: any, message?: string) {
-  if (value === false || value === null || typeof value === "undefined") {
+  if (value === false || value === null || typeof value === 'undefined') {
     throw new Error(message);
   }
 }
@@ -498,7 +444,7 @@ export function invariant(value: any, message?: string) {
 export function warning(cond: any, message: string) {
   if (!cond) {
     // eslint-disable-next-line no-console
-    if (typeof console !== "undefined") console.warn(message);
+    if (typeof console !== 'undefined') console.warn(message);
 
     try {
       // Welcome to debugging history!
@@ -530,17 +476,12 @@ function getHistoryState(location: Location, index: number): HistoryState {
 /**
  * Creates a Location object with a unique key from the given Path
  */
-export function createLocation(
-  current: string | Location,
-  to: To,
-  state: any = null,
-  key?: string
-): Readonly<Location> {
+export function createLocation(current: string | Location, to: To, state: any = null, key?: string): Readonly<Location> {
   let location: Readonly<Location> = {
-    pathname: typeof current === "string" ? current : current.pathname,
-    search: "",
-    hash: "",
-    ...(typeof to === "string" ? parsePath(to) : to),
+    pathname: typeof current === 'string' ? current : current.pathname,
+    search: '',
+    hash: '',
+    ...(typeof to === 'string' ? parsePath(to) : to),
     state,
     // TODO: This could be cleaned up.  push/replace should probably just take
     // full Locations now and avoid the need to run through this flow at all
@@ -554,15 +495,9 @@ export function createLocation(
 /**
  * Creates a string URL path from the given pathname, search, and hash components.
  */
-export function createPath({
-  pathname = "/",
-  search = "",
-  hash = "",
-}: Partial<Path>) {
-  if (search && search !== "?")
-    pathname += search.charAt(0) === "?" ? search : "?" + search;
-  if (hash && hash !== "#")
-    pathname += hash.charAt(0) === "#" ? hash : "#" + hash;
+export function createPath({ pathname = '/', search = '', hash = '' }: Partial<Path>) {
+  if (search && search !== '?') pathname += search.charAt(0) === '?' ? search : '?' + search;
+  if (hash && hash !== '#') pathname += hash.charAt(0) === '#' ? hash : '#' + hash;
   return pathname;
 }
 
@@ -573,13 +508,13 @@ export function parsePath(path: string): Partial<Path> {
   let parsedPath: Partial<Path> = {};
 
   if (path) {
-    let hashIndex = path.indexOf("#");
+    let hashIndex = path.indexOf('#');
     if (hashIndex >= 0) {
       parsedPath.hash = path.substr(hashIndex);
       path = path.substr(0, hashIndex);
     }
 
-    let searchIndex = path.indexOf("?");
+    let searchIndex = path.indexOf('?');
     if (searchIndex >= 0) {
       parsedPath.search = path.substr(searchIndex);
       path = path.substr(0, searchIndex);
@@ -601,7 +536,7 @@ export type UrlHistoryOptions = {
 };
 
 function getUrlBasedHistory(
-  getLocation: (window: Window, globalHistory: Window["history"]) => Location,
+  getLocation: (window: Window, globalHistory: Window['history']) => Location,
   createHref: (window: Window, to: To) => string,
   validateLocation: ((location: Location, to: To) => void) | null,
   options: UrlHistoryOptions = {}
@@ -617,7 +552,7 @@ function getUrlBasedHistory(
   // case we should log a warning as it will result in bugs.
   if (index == null) {
     index = 0;
-    globalHistory.replaceState({ ...globalHistory.state, idx: index }, "");
+    globalHistory.replaceState({ ...globalHistory.state, idx: index }, '');
   }
 
   function getIndex(): number {
@@ -646,13 +581,13 @@ function getUrlBasedHistory(
 
     // try...catch because iOS limits us to 100 pushState calls :/
     try {
-      globalHistory.pushState(historyState, "", url);
+      globalHistory.pushState(historyState, '', url);
     } catch (error) {
       // If the exception is because `state` can't be serialized, let that throw
       // outwards just like a replace call would so the dev knows the cause
       // https://html.spec.whatwg.org/multipage/nav-history-apis.html#shared-history-push/replace-state-steps
       // https://html.spec.whatwg.org/multipage/structured-data.html#structuredserializeinternal
-      if (error instanceof DOMException && error.name === "DataCloneError") {
+      if (error instanceof DOMException && error.name === 'DataCloneError') {
         throw error;
       }
       // They are going to lose state here, but there is no real
@@ -673,7 +608,7 @@ function getUrlBasedHistory(
     index = getIndex();
     let historyState = getHistoryState(location, index);
     let url = history.createHref(location);
-    globalHistory.replaceState(historyState, "", url);
+    globalHistory.replaceState(historyState, '', url);
 
     if (v5Compat && listener) {
       listener({ action, location: history.location, delta: 0 });
@@ -684,20 +619,14 @@ function getUrlBasedHistory(
     // window.location.origin is "null" (the literal string value) in Firefox
     // under certain conditions, notably when serving from a local HTML file
     // See https://bugzilla.mozilla.org/show_bug.cgi?id=878297
-    let base =
-      window.location.origin !== "null"
-        ? window.location.origin
-        : window.location.href;
+    let base = window.location.origin !== 'null' ? window.location.origin : window.location.href;
 
-    let href = typeof to === "string" ? to : createPath(to);
+    let href = typeof to === 'string' ? to : createPath(to);
     // Treating this as a full URL will strip any trailing spaces so we need to
     // pre-encode them since they might be part of a matching splat param from
     // an ancestor route
-    href = href.replace(/ $/, "%20");
-    invariant(
-      base,
-      `No window.location.(origin|href) available to create URL for href: ${href}`
-    );
+    href = href.replace(/ $/, '%20');
+    invariant(base, `No window.location.(origin|href) available to create URL for href: ${href}`);
     return new URL(href, base);
   }
 
@@ -710,7 +639,7 @@ function getUrlBasedHistory(
     },
     listen(fn: Listener) {
       if (listener) {
-        throw new Error("A history only accepts one active listener");
+        throw new Error('A history only accepts one active listener');
       }
       window.addEventListener(PopStateEventType, handlePop);
       listener = fn;
